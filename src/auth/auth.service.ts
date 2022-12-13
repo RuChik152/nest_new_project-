@@ -8,7 +8,7 @@ import { CreateUserDto } from './auth.dto';
 export class AuthService {
   constructor(@InjectModel(Auth.name) private authModel: Model<AuthDocument>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<Auth> {
+  async create(createUserDto: CreateUserDto) {
     const createUser = await this.authModel.create(createUserDto);
     return createUser;
   }
