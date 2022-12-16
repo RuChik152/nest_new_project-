@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './user.dto';
 import {
@@ -6,10 +6,24 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { UserVerifyDto, UserVerifyResponse } from './user_verify.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Post('/verify')
+  @ApiOkResponse({
+    status: 200,
+    type: UserVerifyResponse,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+  })
+  async getVerifyUser(@Body() body: UserVerifyDto) {
+    const verifyResponse = await this.userService.verifyUserOculus(body);
+    return verifyResponse;
+  }
 
   @Get('/:id')
   @ApiNotFoundResponse({
