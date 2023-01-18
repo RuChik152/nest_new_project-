@@ -1,15 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import * as bcrypt from 'bcrypt';
+import {ApiPropertyOptional} from "@nestjs/swagger";
 
-export type AuthDocument = HydratedDocument<Auth>;
+export type AdminAuthDocument = HydratedDocument<AdminUser>;
 
 @Schema()
-export class Auth {
+export class AdminUser {
   @Prop()
-  name: string;
+  email: string;
 
   @Prop()
-  id: string;
+  password: string;
+
+  @Prop({ required: false })
+  name?: string
 }
 
-export const AuthSchema = SchemaFactory.createForClass(Auth);
+
+
+export const AdminUserSchema = SchemaFactory.createForClass(AdminUser);
+
+AdminUserSchema.pre("save", async function (next){
+  const hash = await bcrypt.hash(this.password, 20);
+  this.password = hash;
+  next();
+})
