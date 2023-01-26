@@ -6,10 +6,6 @@ import {AdminUserDto} from './auth.dto';
 export class AuthController {
   constructor(private readonly authServices: AuthService) {}
 
-  // @Post('')
-  // creatUser(@Body() body: AdminUserDto) {
-  //   return body;
-  // }
 
   @Post('signup')
   async signup(@Body() createAdminUserDto: AdminUserDto) : Promise<AdminUserDto> {

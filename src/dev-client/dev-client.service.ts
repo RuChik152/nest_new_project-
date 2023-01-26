@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDevClientDto } from './dto/create-dev-client.dto';
-import { UpdateDevClientDto } from './dto/update-dev-client.dto';
+import {Injectable} from '@nestjs/common';
+import {readFile, writeFile} from "node:fs/promises"
+import {resolve} from "path"
+import {CreateDevClientDto} from './dto/create-dev-client.dto';
 import {InjectModel} from "@nestjs/mongoose";
 import {GameSetting, GameSettingDocument} from "./dev-client.chema";
 import {Model} from "mongoose";
 
 
-
 @Injectable()
 export class DevClientService {
-  constructor(@InjectModel(GameSetting.name) private devGameSettingModel: Model<GameSettingDocument>) {}
+  constructor(@InjectModel(GameSetting.name) private devGameSettingModel: Model<GameSettingDocument>) {
+  }
 
 
   async createDocumentSettings(createDevClientDto: CreateDevClientDto){
@@ -28,15 +29,20 @@ export class DevClientService {
     return settings;
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} devClient`;
-  // }
 
-  // update(id: number, updateDevClientDto: UpdateDevClientDto) {
-  //   return `This action updates a #${id} devClient`;
-  // }
+  async getDataFile() {
+    const pathFile = resolve(process.cwd(), 'src/mock_data', 'gameSettings.json')
+      return await readFile(pathFile, {encoding: "utf-8"})
+  }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} devClient`;
-  // }
+  async putDataFile(data) {
+      const pathFile = resolve(process.cwd(), 'src/mock_data', 'gameSettings.json')
+      const newData = data
+      const currentTime = newData.time
+      await writeFile(pathFile, JSON.stringify(Object.assign(newData, {time: currentTime})), {encoding: "utf-8"})
+      return await readFile(pathFile, {encoding: "utf-8"});
+
+  }
+
+
 }

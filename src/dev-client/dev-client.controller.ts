@@ -1,8 +1,9 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, Put} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Put, Res, Header} from '@nestjs/common';
 import { DevClientService } from './dev-client.service';
 import { CreateDevClientDto } from './dto/create-dev-client.dto';
-import { UpdateDevClientDto } from './dto/update-dev-client.dto';
+import {ApiBody, ApiOkResponse, ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('dev-client')
 @Controller('dev-client')
 export class DevClientController {
   constructor(private readonly devClientService: DevClientService) {}
@@ -25,14 +26,19 @@ export class DevClientController {
     return updateGameSettings;
   }
 
+ @ApiOkResponse({status: 200, description: 'Getting data from the settings file.'})
+ @Get()
+ @Header('Content-Type', 'application/json')
+ async getDataFileSettings(){
+   const getFile = await this.devClientService.getDataFile()
+   return getFile;
+ }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDevClientDto: UpdateDevClientDto) {
-  //   return this.devClientService.update(+id, updateDevClientDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.devClientService.remove(+id);
-  // }
+ @Put()
+ @Header('Content-Type', 'application/json')
+ async updateDataFile(@Body() settings: Object) {
+    const updateFileSettings = await this.devClientService.putDataFile(settings)
+    return updateFileSettings
+ }
+
 }
