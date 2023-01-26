@@ -1,7 +1,7 @@
-import {Controller, Get, Post, Body, Param, Put, Res, Header} from '@nestjs/common';
-import { DevClientService } from './dev-client.service';
-import { CreateDevClientDto } from './dto/create-dev-client.dto';
-import {ApiBody, ApiOkResponse, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Get, Header, Param, Post, Put} from '@nestjs/common';
+import {DevClientService} from './dev-client.service';
+import {CreateDevClientDto} from './dto/create-dev-client.dto';
+import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('dev-client')
 @Controller('dev-client')
@@ -30,15 +30,19 @@ export class DevClientController {
  @Get()
  @Header('Content-Type', 'application/json')
  async getDataFileSettings(){
-   const getFile = await this.devClientService.getDataFile()
-   return getFile;
+      try {
+          const getFile = await this.devClientService.getDataFile()
+          return getFile;
+      }catch (error){
+          console.log('ERROR', error)
+          return error
+      }
  }
 
  @Put()
  @Header('Content-Type', 'application/json')
  async updateDataFile(@Body() settings: Object) {
-    const updateFileSettings = await this.devClientService.putDataFile(settings)
-    return updateFileSettings
+     return await this.devClientService.putDataFile(settings)
  }
 
 }
