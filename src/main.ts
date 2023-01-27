@@ -24,12 +24,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('admin/api', app, document);
 
-
   await app.listen(PORT, () => {
-      console.log(`SERVER START, ${new Date()}, 
+    console.log(`SERVER START, ${new Date()}, 
       MAIN SERVER => http://localhost:${PORT}
       SWAGGER SERVER => http://localhost:${PORT}/admin/api
-      `)
+      `);
   });
 }
 bootstrap();

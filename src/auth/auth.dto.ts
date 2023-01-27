@@ -1,5 +1,5 @@
-import {IsNotEmpty, IsString} from 'class-validator';
-import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import { IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AdminUserDto {
   @ApiProperty()
@@ -14,4 +14,3 @@ export class AdminUserDto {
   @IsString()
   name?: string;
 }
-

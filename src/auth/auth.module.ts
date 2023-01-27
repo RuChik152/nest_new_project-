@@ -6,7 +6,9 @@ import { AdminUser, AdminUserSchema } from './auth.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: AdminUser.name, schema: AdminUserSchema }]),
+    MongooseModule.forFeature([
+      { name: AdminUser.name, schema: AdminUserSchema },
+    ]),
   ],
   controllers: [AuthController],
   providers: [AuthService],
