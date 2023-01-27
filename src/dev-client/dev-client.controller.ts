@@ -11,8 +11,8 @@ import { DevClientService } from './dev-client.service';
 import { CreateDevClientDto } from './dto/create-dev-client.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('dev-client')
-@Controller('dev-client')
+@ApiTags('devclient')
+@Controller('devclient')
 export class DevClientController {
   constructor(private readonly devClientService: DevClientService) {}
 

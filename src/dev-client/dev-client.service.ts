@@ -29,20 +29,12 @@ export class DevClientService {
   }
 
   async getDataFile() {
-    const pathFile = resolve(
-      process.cwd(),
-      'mock_data',
-      'gameSettings.json',
-    );
+    const pathFile = resolve(process.cwd(), 'mock_data', 'gameSettings.json');
     return await readFile(pathFile, { encoding: 'utf-8' });
   }
 
   async putDataFile(data) {
-    const pathFile = resolve(
-      process.cwd(),
-      'mock_data',
-      'gameSettings.json',
-    );
+    const pathFile = resolve(process.cwd(), 'mock_data', 'gameSettings.json');
     const newData = data;
     const currentTime = newData.time;
     await writeFile(
@@ -57,11 +49,7 @@ export class DevClientService {
     const ac = new AbortController();
     const { signal } = ac;
     setTimeout(() => ac.abort(), 100000);
-    const pathFile = resolve(
-      process.cwd(),
-      'mock_data',
-      'gameSettings.json',
-    );
+    const pathFile = resolve(process.cwd(), 'mock_data', 'gameSettings.json');
     try {
       const watcher = watch(pathFile, { signal });
       for await (const event of watcher) {
