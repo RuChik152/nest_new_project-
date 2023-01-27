@@ -31,7 +31,7 @@ export class DevClientService {
   async getDataFile() {
     const pathFile = resolve(
       process.cwd(),
-      'src/mock_data',
+      'mock_data',
       'gameSettings.json',
     );
     return await readFile(pathFile, { encoding: 'utf-8' });
@@ -40,7 +40,7 @@ export class DevClientService {
   async putDataFile(data) {
     const pathFile = resolve(
       process.cwd(),
-      'src/mock_data',
+      'mock_data',
       'gameSettings.json',
     );
     const newData = data;
@@ -59,7 +59,7 @@ export class DevClientService {
     setTimeout(() => ac.abort(), 100000);
     const pathFile = resolve(
       process.cwd(),
-      'src/mock_data',
+      'mock_data',
       'gameSettings.json',
     );
     try {

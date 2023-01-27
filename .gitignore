@@ -35,5 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 .env
 
-src/mock_data
-src/mock_data/gameSettings.json
+/mock_data
+/mock_data/gameSettings.json
