@@ -29,6 +29,7 @@ export class DevClientService {
   }
 
   async getDataFile() {
+
     const pathFile = resolve(process.cwd(), 'mock_data', 'gameSettings.json');
     return await readFile(pathFile, { encoding: 'utf-8' });
   }
