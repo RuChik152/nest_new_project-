@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AdminUserDto } from './auth.dto';
+import { Body, Controller, Post } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { AdminUserDto } from "./auth.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -19,4 +19,10 @@ export class AuthController {
     const findUser = await this.authServices.find(findAdminUserDto);
     return findUser;
   }
+
+  @Post('enter')
+  async writeDataUser(@Body() userData: AdminUserDto) {
+    return await this.authServices.writeUserData(userData)
+  }
+
 }
