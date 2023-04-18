@@ -8,9 +8,5 @@ export class AdminUserDto {
 
   @ApiProperty()
   @IsString()
-  password: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  name?: string;
+  name: string;
 }
