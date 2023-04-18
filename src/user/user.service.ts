@@ -36,7 +36,7 @@ export class UserService {
           Connection: 'keep-alive',
         },
         data: {
-          access_token: 'OC|1234567898014273|5f8730a4n51c5f8v8122aaf971b937e7',
+          access_token: `OC|${process.env.APP_ID}|${process.env.APP_SECRET}`,
           nonce: `${body.nonce}`,
           user_id: `${body.userID}`,
         },

@@ -1,27 +1,22 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './auth.dto';
+import { AdminUserDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authServices: AuthService) {}
 
   @Post('signup')
-  creatUser(@Body() body: any) {
-    return body;
-  }
-
-  @Get()
-  userInfo() {
-    return {
-      id: 1,
-      name: 'IVAN',
-    };
-  }
-
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.authServices.create(createUserDto);
+  async signup(
+    @Body() createAdminUserDto: AdminUserDto,
+  ): Promise<AdminUserDto> {
+    const user = await this.authServices.create(createAdminUserDto);
     return user;
+  }
+
+  @Post('signin')
+  async signin(@Body() findAdminUserDto: AdminUserDto) {
+    const findUser = await this.authServices.find(findAdminUserDto);
+    return findUser;
   }
 }
