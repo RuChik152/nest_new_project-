@@ -25,4 +25,5 @@ export class AuthController {
     return await this.authServices.writeUserData(userData)
   }
 
+
 }

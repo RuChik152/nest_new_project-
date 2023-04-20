@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DownloadModule } from './download/download.module';
 import { UserModule } from './user/user.module';
 import { DevClientModule } from './dev-client/dev-client.module';
+import { AnaliticModule } from './analitic/analitic.module';
 
 process.env;
 
@@ -20,6 +21,7 @@ process.env;
     DownloadModule,
     UserModule,
     DevClientModule,
+    AnaliticModule,
   ],
   controllers: [AppController],
   providers: [AppService],

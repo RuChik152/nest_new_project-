@@ -74,4 +74,4 @@ Nest is [MIT licensed](LICENSE).
 
 
 ## Version project
-## 0.4.2
+## 0.5.2
