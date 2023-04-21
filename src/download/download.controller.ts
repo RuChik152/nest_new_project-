@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Res } from "@nestjs/common";
 import { ApiTags } from '@nestjs/swagger';
 import { DownloadService } from './download.service';
 import { Response } from 'express';
@@ -19,4 +19,5 @@ export class DownloadController {
     response.attachment();
     response.send(file);
   }
+
 }
