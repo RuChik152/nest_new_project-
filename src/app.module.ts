@@ -8,11 +8,17 @@ import { DownloadModule } from './download/download.module';
 import { UserModule } from './user/user.module';
 import { DevClientModule } from './dev-client/dev-client.module';
 import { AnaliticModule } from './analitic/analitic.module';
+import {MulterModule} from "@nestjs/platform-express";
+import { HistoryModule } from './history/history.module';
+import * as process from "process";
 
 process.env;
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: process.env.PATH_STORAGE_HISTORYS
+    }),
     AuthModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(
@@ -22,6 +28,7 @@ process.env;
     UserModule,
     DevClientModule,
     AnaliticModule,
+    HistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
