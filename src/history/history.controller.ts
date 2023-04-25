@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { HistoryService } from "./history.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -17,6 +17,7 @@ export class HistoryController {
   }))
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Param('name') name: string){
     try {
+        await this.historyService.hash(name)
        return {file, name}
     }catch (error) {
       console.log('ERROR: ', error)
@@ -34,5 +35,7 @@ export class HistoryController {
       return error
     }
   }
+
+
 
 }

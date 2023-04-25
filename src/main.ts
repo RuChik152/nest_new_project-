@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+
 const PORT = 5555;
 
 async function bootstrap() {
@@ -23,6 +24,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('admin/api', app, document);
+
 
   await app.listen(PORT, () => {
     console.log(`SERVER START, ${new Date()}, 
