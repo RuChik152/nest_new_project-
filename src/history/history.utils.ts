@@ -1,9 +1,10 @@
 import { extname } from 'path';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import * as process from "process";
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import {createHash} from "node:crypto";
 import { Buffer } from 'node:buffer';
+import fs from "fs";
 
 
 // Разрешить только изображения
@@ -25,7 +26,7 @@ export const editFileName = (req, file, callback) => {
   const fileExtName = extname(file.originalname);
   const randomName = Math.round(Math.random() * 10000).toString(10);
 
-  callback(null, `${params}__${randomName}${fileExtName}`);
+  callback(null, `${params}${fileExtName}`);
 }
 
 export const filePathImg = (req, file, callback) => {
@@ -70,5 +71,50 @@ export const createHashSumm = async (parentFolder: string, options: HashSumTypes
 
    return String(hash.digest('hex'));
  }
+}
 
+// interface ScanDirType {
+//   parentDir: string,
+// }
+
+// export const starReadDir = async (parentDirPath) => {
+//    const map = await scanDir(parentDirPath);
+//    console.log('MAP => ', map);
+// }
+
+// const scanDir = async (path) => {
+//   const map = [];
+//   const dir = await readdir(path, {encoding: 'utf8', withFileTypes: true})
+//   console.log(dir)
+//
+//   for (let value in dir) {
+//     map.push(`${path}\\${dir[value].name}`)
+//     if(dir[value].isDirectory()) {
+//       await scanDir(`${path}\\${dir[value].name}`)
+//     }
+//   }
+//
+//   // console.log('MAP => ', map);
+//   return map
+// }
+
+// export const _getAllFilesFolder = async (dir: string) => {
+//   const filesystem = require("fs");
+//   let results = [];
+//
+//   filesystem.appendFileSync(dir).forEach((file) => {
+//     file = dir+'/'+file;
+//     const stat = filesystem.statSync(file);
+//
+//     if (stat && stat.isDirectory()) {
+//       results = results.concat(_getAllFilesFolder(file))
+//     } else results.push(file);
+//   });
+//
+//   return results;
+// }
+
+export const getImage = async (fileName: string) => {
+  const dirName = fileName.replace(/\..*$/ig, '');
+  return await readFile(`${process.env.PATH_STORAGE_HISTORYS}/${dirName}/${fileName}`)
 }
