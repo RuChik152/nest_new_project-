@@ -118,3 +118,4 @@ export const getImage = async (fileName: string) => {
   const dirName = fileName.replace(/\..*$/ig, '');
   return await readFile(`${process.env.PATH_STORAGE_HISTORYS}/${dirName}/${fileName}`)
 }
+
