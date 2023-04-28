@@ -3,6 +3,7 @@ import * as os from "os"
 import * as process from "process";
 import {rm} from "node:fs/promises"
 import { existsSync } from "fs";
+import * as path from "path";
 
 
 export class Compressor {
@@ -28,7 +29,7 @@ export class Compressor {
         }
         switch (this.#OS){
           case 'Windows_NT':
-            this.#pathExe = process.env.PATH_TO_ZIP_WINDOWS
+            this.#pathExe = path.resolve(process.env.PATH_TO_ZIP_WINDOWS)
             break;
           default:
             this.#pathExe = process.env.PATH_TO_ZIP_LINUX
@@ -48,7 +49,7 @@ export class Compressor {
         if(typeof this.#pathFolder === "object"){
           switch (this.#OS){
             case 'Windows_NT':
-              this.#pathExe = process.env.PATH_TO_ZIP_WINDOWS
+              this.#pathExe = path.resolve(process.env.PATH_TO_ZIP_WINDOWS)
               break;
             default:
               this.#pathExe = process.env.PATH_TO_ZIP_LINUX

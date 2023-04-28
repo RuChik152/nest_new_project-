@@ -4,7 +4,7 @@ import * as process from "process";
 import { readFile, readdir } from 'node:fs/promises';
 import {createHash} from "node:crypto";
 import { Buffer } from 'node:buffer';
-import fs from "fs";
+import * as path from "path";
 
 
 // Разрешить только изображения
@@ -31,9 +31,11 @@ export const editFileName = (req, file, callback) => {
 
 export const filePathImg = (req, file, callback) => {
   const pagaName = req.params.name;
-  const path = `${process.env.PATH_STORAGE_HISTORYS}\\${pagaName}`
 
-  callback(null, path);
+  // const path = `${process.env.PATH_STORAGE_HISTORYS}\\${pagaName}`
+
+  const pathFile = path.resolve(process.env.PATH_STORAGE_HISTORYS, pagaName)
+  callback(null, pathFile);
 }
 
 interface HashSumTypesOptions {
@@ -47,13 +49,16 @@ export const createHashSumm = async (parentFolder: string, options: HashSumTypes
  if(typeof options.files === 'object') {
    const arrBuff: Buffer[] = []
    if(options.nameChildFolder) {
-     stringPathFolder = `${parentFolder}/${options.nameChildFolder}`
+     // stringPathFolder = `${parentFolder}/${options.nameChildFolder}`
+     stringPathFolder = path.resolve(parentFolder, options.nameChildFolder)
    } else {
-     stringPathFolder = `${parentFolder}`
+     // stringPathFolder = `${parentFolder}`
+     stringPathFolder = path.resolve(parentFolder)
    }
 
    for(let el in options.files){
-     const bufFile = await readFile(`${stringPathFolder}/${options.files[el]}`);
+     // const bufFile = await readFile(`${stringPathFolder}/${options.files[el]}`);
+     const bufFile = await readFile(path.resolve(stringPathFolder,`${options.files[el]}`));
      arrBuff.push(bufFile)
    }
 
@@ -62,11 +67,14 @@ export const createHashSumm = async (parentFolder: string, options: HashSumTypes
    return String(hash.digest('hex'));
  } else {
    if(options.nameChildFolder) {
-     stringPathFolder = `${parentFolder}/${options.nameChildFolder}`
+     // stringPathFolder = `${parentFolder}/${options.nameChildFolder}`
+     stringPathFolder = path.resolve(parentFolder, options.nameChildFolder)
    } else {
-     stringPathFolder = `${parentFolder}`
+     // stringPathFolder = `${parentFolder}`
+     stringPathFolder = path.resolve(parentFolder)
    }
-   const bufFile = await readFile(`${stringPathFolder}/${options.files}`);
+   // const bufFile = await readFile(`${stringPathFolder}/${options.files}`);
+   const bufFile = await readFile(path.resolve(stringPathFolder, options.files));
    hash.update(bufFile)
 
    return String(hash.digest('hex'));
@@ -116,6 +124,7 @@ export const createHashSumm = async (parentFolder: string, options: HashSumTypes
 
 export const getImage = async (fileName: string) => {
   const dirName = fileName.replace(/\..*$/ig, '');
-  return await readFile(`${process.env.PATH_STORAGE_HISTORYS}/${dirName}/${fileName}`)
+  // return await readFile(`${process.env.PATH_STORAGE_HISTORYS}/${dirName}/${fileName}`)
+  return await readFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, dirName, fileName))
 }
 
