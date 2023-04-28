@@ -1,18 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { appendFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
-
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import * as process from "process";
-import { createHashSumm, getImage } from "./history.utils";
+import { createHashSumm } from "./history.utils";
 import { ScanDir } from "../lib/ScanDir";
-import { createReadStream, createWriteStream } from "fs";
-import * as zlib from "zlib";
+import { createReadStream } from "fs";
 import { Compressor } from "../lib/Compressor";
-import _ from "lodash";
 
 
-import {promisify} from "node:util"
-import {pipeline} from "node:stream"
-import {createGzip} from "node:zlib"
 
 
 
@@ -33,7 +27,11 @@ export class HistoryService {
     try {
       const filesData = await readdir(`${process.env.PATH_STORAGE_HISTORYS}/${name}`);
       const hash = await createHashSumm(process.env.PATH_STORAGE_HISTORYS,{files:filesData, nameChildFolder:name});
-      await appendFile(`${process.env.PATH_STORAGE_HISTORYS}/${name}/hash`, hash);
+      await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/${name}/hash`, hash);
+      const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
+      await dirList.scanReadDirNode();
+      await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
+      await new Compressor(process.env.PATH_STORAGE_HISTORYS, process.env.PATH_STORAGE_HISTORYS_ZIP).zip()
       return true
     } catch (error) {
       console.error('Hash HistoryService [ERROR]: ',error);
@@ -53,6 +51,10 @@ export class HistoryService {
      const filesData = await readdir(`${process.env.PATH_STORAGE_HISTORYS}/${nameHistory}`);
      const hash = await createHashSumm(process.env.PATH_STORAGE_HISTORYS,{files:filesData, nameChildFolder:nameHistory});
      await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/${nameHistory}/hash`, hash);
+     const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
+     await dirList.scanReadDirNode();
+     await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
+     await new Compressor(process.env.PATH_STORAGE_HISTORYS, process.env.PATH_STORAGE_HISTORYS_ZIP).zip()
      return await readFile(`${process.env.PATH_STORAGE_HISTORYS}/${nameHistory}/hash`, { encoding: 'utf8' });
    } catch (error) {
      console.log('UpdateHash HistoryService [ERROR]: ', error)
@@ -61,10 +63,10 @@ export class HistoryService {
 
   async getAllDataResources() {
    try {
-      const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
-      await dirList.scanReadDirNode();
-      await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
-      await this.creatGzip();
+      // const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
+      // await dirList.scanReadDirNode();
+      // await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
+      // await this.creatGzip();
       return createReadStream(process.env.PATH_STORAGE_HISTORYS_ZIP)
    }catch (error) {
      console.log('GetAllDataResources HistoryService [ERROR]: ', error)
@@ -94,10 +96,13 @@ export class HistoryService {
 
   async diffResource(diffData: object) {
 
-    const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
-    await dirList.scanReadDirNode();
-    await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
-    const currentData = dirList.JSONdata
+    // const dirList = new ScanDir(process.env.PATH_STORAGE_HISTORYS)
+    // await dirList.scanReadDirNode();
+    // await writeFile(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`, JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
+    const readMapJson = await readFile(`${process.env.PATH_MAP_STORAGE}`, {encoding: 'utf8'})
+
+    // const currentData = dirList.JSONdata
+    const currentData = JSON.parse(readMapJson)
     const listUpdate: String[] = []
 
 
@@ -111,13 +116,21 @@ export class HistoryService {
       }
     }
 
+    const arrCurr = Object.keys(currentData)
+    const arrDiff = Object.keys(diffData)
+
+    if(arrCurr.length !== arrDiff.length){
+      for(let elCurr in arrCurr){
+       const check = arrDiff.includes(arrCurr[elCurr])
+        if(!check) {
+          listUpdate.push(`${process.env.PATH_STORAGE_HISTORYS}/${arrCurr[elCurr]}`)
+        }
+      }
+    }
 
     listUpdate.push(`${process.env.PATH_STORAGE_HISTORYS}/resource_map.json`)
-    console.log('DIFF_LIST', listUpdate);
-
-    await new Compressor(listUpdate, process.env.PATH_STORAGE_HISTORYS_ZIP).multZip();
-
-    return createReadStream(process.env.PATH_STORAGE_HISTORYS_ZIP)
+    await new Compressor(listUpdate, process.env.PATH_STORAGE_HISTORYS_ZIP_DIFF).multZip();
+    return createReadStream(process.env.PATH_STORAGE_HISTORYS_ZIP_DIFF)
   }
 
 }

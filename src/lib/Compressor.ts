@@ -2,7 +2,7 @@ import * as child_process from "child_process";
 import * as os from "os"
 import * as process from "process";
 import {rm} from "node:fs/promises"
-import { createReadStream, existsSync } from "fs";
+import { existsSync } from "fs";
 
 
 export class Compressor {
@@ -54,7 +54,6 @@ export class Compressor {
               this.#pathExe = process.env.PATH_TO_ZIP_LINUX
               break;
           }
-          // const arr = ['G:\\project\\BeliVR\\fileHistoryStorage\\NAME_STORY_1', 'G:\\project\\BeliVR\\fileHistoryStorage\\NEW_DIFF_HISTIRY']
           const arr = []
           arr.push(...this.#pathFolder)
           child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, ...arr])
