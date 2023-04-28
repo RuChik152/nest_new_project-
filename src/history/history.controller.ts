@@ -62,7 +62,7 @@ export class HistoryController {
 
   //TODO When deleted is it ?
   // @Get('imag/:img')
-  // @Header('content-type', 'image/jpeg')
+  // @Header('content-type', 'image/*')
   // async getImage(@Param('img') img: string, @Res() res){
   //   const dirName = img.replace(/\..*$/ig, '');
   //   return  res.sendFile(img, {root:`${process.env.PATH_STORAGE_HISTORYS}/${dirName}`})
@@ -78,7 +78,7 @@ export class HistoryController {
 
   @Get('imag/:img')
   @Header('content-type','image/*')
-  getImage(@Param('img') img: string, @Res({ passthrough: true }) response: Response) {
+  getImage(@Param('img') img: string, @Res({ passthrough: true }) response: any) {
     const file = this.historyService.getImageData(img);
     return new StreamableFile(file);
   }
