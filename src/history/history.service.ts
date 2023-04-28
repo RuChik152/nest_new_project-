@@ -45,6 +45,8 @@ export class HistoryService {
       await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, 'resource_map.json'), JSON.stringify(dirList.JSONdata), {encoding: "utf-8"})
 
       // await new Compressor(process.env.PATH_STORAGE_HISTORYS, process.env.PATH_STORAGE_HISTORYS_ZIP).zip()
+      console.log("Hash HistoryService: process.env.PATH_STORAGE_HISTORYS => ", process.env.PATH_STORAGE_HISTORYS)
+      console.log("Hash HistoryService: process.env.PATH_STORAGE_HISTORYS_ZIP => ", process.env.PATH_STORAGE_HISTORYS_ZIP)
       await new Compressor(path.resolve(process.env.PATH_STORAGE_HISTORYS), path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP)).zip()
 
       return true

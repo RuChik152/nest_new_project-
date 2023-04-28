@@ -23,6 +23,8 @@ export class Compressor {
       console.log('OS', this.#OS)
     }
     async zip() {
+      console.log("COMPRESSOR zip: this.#pathStore", this.#pathStore)
+      console.log("COMPRESSOR zip: this.#pathFolder", this.#pathFolder)
       try {
         if(existsSync(this.#pathStore)){
           await rm(this.#pathStore)
@@ -36,7 +38,8 @@ export class Compressor {
             break;
         }
         // child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, `${this.#pathFolder}\\*`])
-        child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, path.resolve(`${this.#pathFolder}`, '\\*')])
+        child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, `${this.#pathFolder}`])
+        // child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, path.resolve(`${this.#pathFolder}`, '\\*')])
       } catch (error) {
         console.log('ERROR', error)
       }
