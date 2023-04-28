@@ -35,7 +35,8 @@ export class Compressor {
             this.#pathExe = process.env.PATH_TO_ZIP_LINUX
             break;
         }
-        child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, `${this.#pathFolder}\\*`])
+        // child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, `${this.#pathFolder}\\*`])
+        child_process.execFileSync(this.#pathExe, ['a', '-tzip', '-spe', '-mx5', '-r0', this.#pathStore, path.resolve(`${this.#pathFolder}`, '\\*')])
       } catch (error) {
         console.log('ERROR', error)
       }
