@@ -10,6 +10,7 @@ import { DevClientModule } from './dev-client/dev-client.module';
 import { AnaliticModule } from './analitic/analitic.module';
 import {MulterModule} from "@nestjs/platform-express";
 import { HistoryModule } from './history/history.module';
+import { MailModule } from './mail/mail.module';
 import * as process from "process";
 
 process.env;
@@ -29,6 +30,7 @@ process.env;
     DevClientModule,
     AnaliticModule,
     HistoryModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
