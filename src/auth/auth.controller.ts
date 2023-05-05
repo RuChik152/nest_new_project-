@@ -6,24 +6,24 @@ import { AdminUserDto } from "./auth.dto";
 export class AuthController {
   constructor(private readonly authServices: AuthService) {}
 
-  @Post('signup')
-  async signup(
-    @Body() createAdminUserDto: AdminUserDto,
-  ): Promise<AdminUserDto> {
-    const user = await this.authServices.create(createAdminUserDto);
-    return user;
-  }
-
-  @Post('signin')
-  async signin(@Body() findAdminUserDto: AdminUserDto) {
-    const findUser = await this.authServices.find(findAdminUserDto);
-    return findUser;
-  }
-
-  @Post('enter')
-  async writeDataUser(@Body() userData: AdminUserDto) {
-    return await this.authServices.writeUserData(userData)
-  }
+  // @Post('signup')
+  // async signup(
+  //   @Body() createAdminUserDto: AdminUserDto,
+  // ): Promise<AdminUserDto> {
+  //   const user = await this.authServices.create(createAdminUserDto);
+  //   return user;
+  // }
+  //
+  // @Post('signin')
+  // async signin(@Body() findAdminUserDto: AdminUserDto) {
+  //   const findUser = await this.authServices.find(findAdminUserDto);
+  //   return findUser;
+  // }
+  //
+  // @Post('enter')
+  // async writeDataUser(@Body() userData: AdminUserDto) {
+  //   return await this.authServices.writeUserData(userData)
+  // }
 
 
 }

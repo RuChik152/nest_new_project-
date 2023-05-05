@@ -4,6 +4,8 @@ import { MailController } from './mail.controller';
 import { MailerModule } from "@nestjs-modules/mailer";
 import { resolve } from "path";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { MongooseModule } from "@nestjs/mongoose";
+import { MailerUserSchema, User } from "./mail.schema";
 
 @Global()
 @Module({
@@ -20,7 +22,7 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
           },
         },
         defaults: {
-          from: `info@belivr.tech>`
+          from: `"Karga" <info@belivr.tech>`
         },
         template: {
           dir: resolve(__dirname, 'templates'),
@@ -31,7 +33,10 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
         }
       })
 
-    })
+    }),
+    MongooseModule.forFeature([
+      {name: User.name, schema: MailerUserSchema}
+    ]),
   ],
   controllers: [MailController],
   providers: [MailService],

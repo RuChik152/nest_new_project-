@@ -20,13 +20,13 @@ process.env;
     MulterModule.register({
       dest: process.env.PATH_STORAGE_HISTORYS
     }),
-    AuthModule,
+    // AuthModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(
       `${process.env.DB_METHOD}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/belivr_karga`,
     ),
     DownloadModule,
-    UserModule,
+    // UserModule,
     DevClientModule,
     AnaliticModule,
     HistoryModule,
