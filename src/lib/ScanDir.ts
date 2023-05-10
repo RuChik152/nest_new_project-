@@ -40,13 +40,12 @@ export class ScanDir {
               case 'text':
                 findObj.description = await this.#getTextData(`${pathFolder}/${dir[el].name}`);
                 break;
-              case 'image':
-                findObj.IconUrl = `${process.env.HOST_NAME}/history/imag/${dir[el].name}`;
-                break;
+              // case 'image':
+              //   findObj.IconUrl = `${process.env.HOST_NAME}/history/imag/${dir[el].name}`;
+              //   break;
               default:
                 findObj[`${dir[el].name}`] = await this.#getTextData(`${pathFolder}/${dir[el].name}`);
             }
-
           } else {
             await this.#scanDir(`${pathFolder}/${dir[el].name}`, String(Math.round(Math.random() * 10000000000)));
           }
@@ -80,9 +79,9 @@ export class ScanDir {
     for(let el in this.#map) {
       this.#objMap[`${this.#map[el].name}`] = Object.assign({}, {
         name:this.#map[el].name,
+        // IconUrl: this.#map[el].IconUrl,
+        description: this.#map[el].description,
         hash: this.#map[el].hash,
-        IconUrl: this.#map[el].IconUrl,
-        description: this.#map[el].description
       })
     }
   }
