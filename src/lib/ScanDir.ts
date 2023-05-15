@@ -40,9 +40,9 @@ export class ScanDir {
               case 'text':
                 findObj.description = await this.#getTextData(`${pathFolder}/${dir[el].name}`);
                 break;
-              // case 'image':
-              //   findObj.IconUrl = `${process.env.HOST_NAME}/history/imag/${dir[el].name}`;
-              //   break;
+              case 'image':
+                findObj.IconUrl = `${process.env.HOST_NAME}/history/imag/${dir[el].name}`;
+                break;
               default:
                 findObj[`${dir[el].name}`] = await this.#getTextData(`${pathFolder}/${dir[el].name}`);
             }
@@ -79,8 +79,8 @@ export class ScanDir {
     for(let el in this.#map) {
       this.#objMap[`${this.#map[el].name}`] = Object.assign({}, {
         name:this.#map[el].name,
-        // IconUrl: this.#map[el].IconUrl,
         description: this.#map[el].description,
+        IconUrl: this.#map[el].IconUrl,
         hash: this.#map[el].hash,
       })
     }

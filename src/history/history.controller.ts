@@ -14,8 +14,8 @@ import {
 import { HistoryService } from "./history.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import { editFileName, filePathImg } from "./history.utils";
-import * as process from "process";
+import { editFileName, filePathImg, updatehistory } from "./history.utils";
+import { CreateHistoryDto } from "./dto/create-history.dto";
 
 
 @Controller('history')
@@ -58,6 +58,28 @@ export class HistoryController {
   @Put('hash/:nameHistory')
   updateHashSum(@Param('nameHistory') nameHistory: string){
     return this.historyService.updateHash(nameHistory)
+  }
+
+  @Put('update/:name/:text/:oldname')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: updatehistory,
+      filename: editFileName
+    })
+  }))
+  async updateHistory(@UploadedFile() file: Express.Multer.File, @Param() params: CreateHistoryDto ){
+    try {
+      const newHash =  await this.historyService.updateFileHistory(params.name, params.text)
+      const data = {
+        newHash,
+        name: params.name,
+        oldname: params.oldname,
+      }
+      return data
+    }catch (error) {
+      console.log('UpdateHistory HistoryController ERROR: ', error)
+      return error
+    }
   }
 
   //TODO When deleted is it ?
@@ -103,7 +125,6 @@ export class HistoryController {
   async createDiffResourceJson() {
     return this.historyService.getDiffResourceMap()
   }
-
 
 
   @Get('zip')
