@@ -14,11 +14,14 @@ const PORT = 5555;
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: true});
   //TODO
   //const app = await NestFactory.create(AppModule, expressAdapter);
 
-  app.enableCors();
+  app.enableCors({
+    origin: "http://localhost:3000/"
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
