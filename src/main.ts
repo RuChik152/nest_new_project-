@@ -14,7 +14,7 @@ const PORT = 5555;
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {cors: true});
+  const app = await NestFactory.create(AppModule);
   //TODO
   //const app = await NestFactory.create(AppModule, expressAdapter);
 
