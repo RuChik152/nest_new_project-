@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { CreateMailDto } from './dto/create-mail.dto';
-import { UpdateMailDto } from './dto/update-mail.dto';
+
 
 @Controller('mail')
 export class MailController {
@@ -30,6 +30,7 @@ export class MailController {
     try {
       console.log('DATA: ', [email, name, platform])
       return await this.mailService.sendUserSelectPlatform({email, name, platform})
+      // return await this.mailService.sendMailUserSelectPlatform({email, name, platform})
     } catch (error) {
       console.log('SendMailerPico MailController ERROR: ', error)
       return error

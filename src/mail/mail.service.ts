@@ -75,13 +75,9 @@ export class MailService {
           await this.mailerService.sendMail({
             to: datauser.email,
             bcc: 'info@belivr.tech',
-            // from: '"Support Team" <support@example.com>', // override default from
             subject: 'Welcome to Alpha Test!',
             template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
             attachments: [],
-            // headers: {
-            //   'x-image-url': 'https://avatars.mds.yandex.net/get-yapic/63032/4a8qLnUCKNaWmISNMySagO9N8Q-1/islands-retina-50',
-            // },
             headers: [{key: "X-Image-Url", value: "https://img-fotki.yandex.ru/get/15599/210509346.df/0_19b12b_992ece27_XS.png"}],
             context: {
               name: datauser.name,
@@ -97,17 +93,24 @@ export class MailService {
     }
   }
 
+  // async sendMailUserSelectPlatform(datauser: CreateMailDto ){
+  //   try {
+  //     console.log('DATA: ', datauser)
+  //   }catch (error) {
+  //     console.log('SendMailUserSelectPlatform MailService ERROR: ', error)
+  //     return error
+  //   }
+  // }
+
   async sendRepateEmail(datauser: CreateMailDto) {
     try {
+      console.log('SEND REPEATE MASSGE')
       await this.mailerService.sendMail({
         to: datauser.email,
-        // from: '"Support Team" <support@example.com>', // override default from
-        subject: 'Alpha test VR game Karga',
+        bcc: 'info@belivr.tech',
+        subject: 'Welcome to Alpha Test!',
         template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
         attachments: [],
-        // headers: {
-        //   'x-image-url': 'https://avatars.mds.yandex.net/get-yapic/63032/4a8qLnUCKNaWmISNMySagO9N8Q-1/islands-retina-50',
-        // },
         context: {
           name: datauser.name,
         },

@@ -22,7 +22,7 @@ import { MailerUserSchema, User } from "./mail.schema";
           },
         },
         defaults: {
-          from: `"Karga" <info@belivr.tech>`
+          from: `info@belivr.tech`
         },
         template: {
           dir: resolve(__dirname, 'templates'),
