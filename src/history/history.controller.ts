@@ -9,7 +9,7 @@ import {
   UploadedFile,
   UseInterceptors,
   StreamableFile,
-  Put
+  Put, Delete
 } from "@nestjs/common";
 import { HistoryService } from "./history.service";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -78,6 +78,16 @@ export class HistoryController {
       return data
     }catch (error) {
       console.log('UpdateHistory HistoryController ERROR: ', error)
+      return error
+    }
+  }
+
+  @Delete(':name')
+  async deleteHistory(@Param() name: string) {
+    try {
+      console.log('TEST DELETE ENDPOINT: ', name);
+    } catch (error) {
+      console.log('UpdateHistory HistoryController ERROR: ', error);
       return error
     }
   }

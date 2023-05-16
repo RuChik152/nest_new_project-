@@ -74,6 +74,7 @@ export class MailService {
         if(user) {
           await this.mailerService.sendMail({
             to: datauser.email,
+            bcc: 'info@belivr.tech',
             // from: '"Support Team" <support@example.com>', // override default from
             subject: 'Welcome to Alpha Test!',
             template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
