@@ -105,7 +105,7 @@ export class HistoryController {
   async getResources(){
     console.log(`GET REQUEST  /history/resources  ${new Date()}`)
     const file = await this.historyService.getAllDataResources()
-    console.log(`GET RESPONSE  /history/resources ${new Date()}`)
+    console.log(`GET RESPONSE  /history/resources ${new Date()}`, file)
     return new StreamableFile(file);
 
   }
@@ -115,7 +115,7 @@ export class HistoryController {
   async updateDiffResource(@Body() json: object) {
     console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
     const file = await this.historyService.diffResource(json)
-    console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
+    console.log(`PUT RESPONSE  /history/resources  ${new Date()}`, file)
     return new StreamableFile(file);
   }
 
