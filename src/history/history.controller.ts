@@ -92,22 +92,6 @@ export class HistoryController {
     }
   }
 
-  //TODO When deleted is it ?
-  // @Get('imag/:img')
-  // @Header('content-type', 'image/*')
-  // async getImage(@Param('img') img: string, @Res() res){
-  //   const dirName = img.replace(/\..*$/ig, '');
-  //   return  res.sendFile(img, {root:`${process.env.PATH_STORAGE_HISTORYS}/${dirName}`})
-  // }
-
-  //TODO When deleted is it ?
-  // @Get('imag/:img')
-  // @Header('content-type','image/*')
-  // getImage(@Param('img') img: string, @Res() res){
-  //   const file = this.historyService.getImageData(img)
-  //   return new StreamableFile(file)
-  // }
-
   @Get('imag/:img')
   @Header('content-type','image/*')
   getImage(@Param('img') img: string, @Res({ passthrough: true }) response: any) {
@@ -119,14 +103,19 @@ export class HistoryController {
   @Get('resources')
   @Header('content-type','application/zip')
   async getResources(){
+    console.log(`GET REQUEST  /history/resources  ${new Date()}`)
     const file = await this.historyService.getAllDataResources()
+    console.log(`GET RESPONSE  /history/resources ${new Date()}`)
     return new StreamableFile(file);
+
   }
 
   @Put('resources')
   @Header('content-type','application/zip')
   async updateDiffResource(@Body() json: object) {
+    console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
     const file = await this.historyService.diffResource(json)
+    console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
     return new StreamableFile(file);
   }
 
