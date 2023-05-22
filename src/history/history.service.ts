@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile, rm } from "node:fs/promises";
 import * as process from "process";
-import { createHashSumm } from "./history.utils";
+import { createHashSumm, updateResourceMapAndCreateNewZip } from "./history.utils";
 import { ScanDir } from "../lib/ScanDir";
 import { createReadStream } from "fs";
 import { Compressor } from "../lib/Compressor";
 import * as path from "path";
+import { CreateHistoryDto } from "./dto/create-history.dto";
 
 
 @Injectable()
@@ -151,6 +152,29 @@ export class HistoryService {
   async updateFileHistory(name: string, data: string) {
     await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, name, `${name}.txt`), data, "utf-8");
     return await this.updateHash(name);
+  }
+
+  async deleteHistory(name: string) {
+    try {
+      await rm(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, name), {force: true, recursive: true})
+      await updateResourceMapAndCreateNewZip()
+      return true
+    }catch (error) {
+      console.log("DeleteHistory HistoryService [ERROR]: ", error);
+      return error
+    }
+  }
+
+  async getDataHistory(name: string) {
+    try {
+      const map = await readFile(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, 'resource_map.json'), {encoding: "utf-8"})
+      return JSON.parse(map)[name]
+    } catch (error) {
+      console.log("GetDataHistory HistoryService [ERROR]: ", error);
+      return error
+    }
+
+
   }
 
 }

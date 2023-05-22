@@ -3,10 +3,12 @@ import { IsOptional, IsString } from "class-validator";
 export class CreateHistoryDto {
 
   @IsString()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @IsString()
-  text: string;
+  @IsOptional()
+  text?: string;
 
   @IsString()
   @IsOptional()

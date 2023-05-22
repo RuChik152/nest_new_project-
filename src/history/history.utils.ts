@@ -1,12 +1,14 @@
 import { extname } from 'path';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import * as process from "process";
-import { readFile, readdir, rename } from 'node:fs/promises';
+import { readFile, readdir, rename, writeFile } from "node:fs/promises";
 import {createHash} from "node:crypto";
 import { Buffer } from 'node:buffer';
 import * as path from "path";
 import { HashSumTypesOptions } from "./history.types";
 import { Request } from "express";
+import { ScanDir } from "../lib/ScanDir";
+import { Compressor } from "../lib/Compressor";
 
 
 // Разрешить только изображения
@@ -103,5 +105,12 @@ export const createHashSumm = async (parentFolder: string, options: HashSumTypes
 export const getImage = async (fileName: string) => {
   const dirName = fileName.replace(/\..*$/ig, '');
   return await readFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, dirName, fileName))
+}
+
+export const updateResourceMapAndCreateNewZip = async () => {
+  const dirList = new ScanDir(path.resolve(process.env.PATH_STORAGE_HISTORYS));
+  await dirList.scanReadDirNode();
+  await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, "resource_map.json"), JSON.stringify(dirList.JSONdata), { encoding: "utf-8" });
+  await new Compressor(path.resolve(process.env.PATH_STORAGE_HISTORYS), path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP)).zip();
 }
 

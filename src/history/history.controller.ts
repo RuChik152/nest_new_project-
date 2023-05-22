@@ -22,6 +22,16 @@ import { CreateHistoryDto } from "./dto/create-history.dto";
 export class HistoryController {
   constructor(private readonly historyService: HistoryService) {}
 
+  @Post('creat')
+  async creatHistory(@Body() data: any) {
+    try {
+      return await this.historyService.creat(data)
+    } catch (error) {
+      console.log('ERROR: ', error)
+      return error
+    }
+  }
+
   @Post('file/:name')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -32,7 +42,7 @@ export class HistoryController {
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Param('name') name: string){
     try {
         await this.historyService.hash(name)
-       return {file, name}
+        return await this.historyService.getDataHistory(name)
     }catch (error) {
       console.log('ERROR: ', error)
       return error
@@ -40,15 +50,7 @@ export class HistoryController {
 
   }
 
-  @Post('creat')
-  async creatHistory(@Body() data: any) {
-    try {
-      return await this.historyService.creat(data)
-    } catch (error) {
-      console.log('ERROR: ', error)
-      return error
-    }
-  }
+
 
   @Get('hash/:nameHistory')
   async getHashSum(@Param('nameHistory') nameHistory: string){
@@ -82,15 +84,6 @@ export class HistoryController {
     }
   }
 
-  @Delete(':name')
-  async deleteHistory(@Param() name: string) {
-    try {
-      console.log('TEST DELETE ENDPOINT: ', name);
-    } catch (error) {
-      console.log('UpdateHistory HistoryController ERROR: ', error);
-      return error
-    }
-  }
 
   @Get('imag/:img')
   @Header('content-type','image/*')
@@ -117,6 +110,18 @@ export class HistoryController {
     const file = await this.historyService.diffResource(json)
     console.log(`PUT RESPONSE  /history/resources  ${new Date()}`, file)
     return new StreamableFile(file);
+  }
+
+  @Delete('resources/:name')
+  async deleteHistory(@Param() params: CreateHistoryDto) {
+    try {
+      console.log('TEST DELETE ENDPOINT: ', params.name);
+      return await this.historyService.deleteHistory(params.name)
+      // return true
+    } catch (error) {
+      console.log('DeleteHistory HistoryController ERROR: ', error);
+      return error
+    }
   }
 
   @Put('resources/diff')
