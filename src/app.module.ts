@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DownloadModule } from './download/download.module';
@@ -11,6 +10,7 @@ import { AnaliticModule } from './analitic/analitic.module';
 import {MulterModule} from "@nestjs/platform-express";
 import { HistoryModule } from './history/history.module';
 import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 
 process.env;
@@ -20,7 +20,6 @@ process.env;
     MulterModule.register({
       dest: process.env.PATH_STORAGE_HISTORYS
     }),
-    // AuthModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(
       `${process.env.DB_METHOD}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/belivr_karga`,
@@ -31,6 +30,7 @@ process.env;
     AnaliticModule,
     HistoryModule,
     MailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,29 +1,22 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AdminUserDto } from "./auth.dto";
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { CreateAuthDto } from './dto/create-auth.dto';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authServices: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  // @Post('signup')
-  // async signup(
-  //   @Body() createAdminUserDto: AdminUserDto,
-  // ): Promise<AdminUserDto> {
-  //   const user = await this.authServices.create(createAdminUserDto);
-  //   return user;
-  // }
-  //
-  // @Post('signin')
-  // async signin(@Body() findAdminUserDto: AdminUserDto) {
-  //   const findUser = await this.authServices.find(findAdminUserDto);
-  //   return findUser;
-  // }
-  //
-  // @Post('enter')
-  // async writeDataUser(@Body() userData: AdminUserDto) {
-  //   return await this.authServices.writeUserData(userData)
-  // }
 
+  @Post()
+  async createUser(@Body() userData: CreateAuthDto) {
+    try {
+      console.log('TEST CREATE USER CONTROLLER: ', userData)
+      return await this.authService.createUser(userData)
+    }catch (error) {
+      console.log('CreateUser AuthController [ERROR]: ', error)
+      return error
+    }
+  }
 
 }
