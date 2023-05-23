@@ -119,7 +119,7 @@ export class HistoryController {
 
       const file = await this.historyService.getAllDataResources()
 
-      console.log(`GET RESPONSE => GetResources HistoryController =>  /history/resources ${new Date()}: \n`, file)
+      console.log(`GET RESPONSE => GetResources HistoryController =>  /history/resources ${new Date().toJSON()}: \n`, file)
       await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'RESPONSE', 'GetResources HistoryController')
 
       return new StreamableFile(file);

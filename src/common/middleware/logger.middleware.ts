@@ -22,6 +22,13 @@ export class LoggerMiddleware implements NestMiddleware {
       'REQUEST',
       'MIDDLEWARE',
     );
+    console.log(
+      '-------------------------\n-----MIDDLEWARE LOGS RESPONSE-----\n-------------------------',
+      {
+        date: new Date().toJSON(),
+        RESPONSE: res
+      },
+    );
     next();
   }
 }
