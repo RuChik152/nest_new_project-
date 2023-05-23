@@ -104,7 +104,7 @@ export class MailService {
 
   async sendRepateEmail(datauser: CreateMailDto) {
     try {
-      console.log('SEND REPEATE MASSGE')
+      console.log('SEND REPEATE MASSGE: ', datauser)
       await this.mailerService.sendMail({
         to: datauser.email,
         bcc: 'info@belivr.tech',
