@@ -1,24 +1,24 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   Param,
   Post,
+  Put,
+  Request,
   Res,
-  UploadedFile,
-  UseInterceptors,
   StreamableFile,
-  Put, Delete, Request, Response
+  UploadedFile,
+  UseInterceptors
 } from "@nestjs/common";
 import { HistoryService } from "./history.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, filePathImg, updatehistory } from "./history.utils";
 import { CreateHistoryDto } from "./dto/create-history.dto";
-import Logger from "../utils/Logger"
-import { AxiosRequestHeaders } from "axios";
-import { response } from "express";
+import Logger from "../utils/Logger";
 
 @Controller('history')
 export class HistoryController {
@@ -102,7 +102,7 @@ export class HistoryController {
     try {
       await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'REQUEST', 'GetResources HistoryController')
       console.log(`GET REQUEST => PingServer HistoryController =>  /history/ping ${new Date()}: \n`)
-      return true
+      return { RSLT: true }
     }catch (error) {
       await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'ERROR', 'GetResources HistoryController', JSON.stringify(error))
       console.log("PingServer HistoryController [ERROR]: ", error);
