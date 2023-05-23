@@ -9,18 +9,22 @@ import {
   UploadedFile,
   UseInterceptors,
   StreamableFile,
-  Put, Delete
+  Put, Delete, Request, Response
 } from "@nestjs/common";
 import { HistoryService } from "./history.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, filePathImg, updatehistory } from "./history.utils";
 import { CreateHistoryDto } from "./dto/create-history.dto";
-
+import Logger from "../utils/Logger"
+import { AxiosRequestHeaders } from "axios";
+import { response } from "express";
 
 @Controller('history')
 export class HistoryController {
+
   constructor(private readonly historyService: HistoryService) {}
+
 
   @Post('creat')
   async creatHistory(@Body() data: any) {
@@ -92,23 +96,47 @@ export class HistoryController {
     return new StreamableFile(file);
   }
 
+  @Get('ping')
+  async pingServer(@Request() req: any,) {
+    const logger = new Logger()
+    try {
+      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'REQUEST', 'GetResources HistoryController')
+      console.log(`GET REQUEST => PingServer HistoryController =>  /history/ping ${new Date()}: \n`)
+      return true
+    }catch (error) {
+      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'ERROR', 'GetResources HistoryController', JSON.stringify(error))
+      console.log("PingServer HistoryController [ERROR]: ", error);
+      return error
+    }
+  }
 
   @Get('resources')
   @Header('content-type','application/zip')
-  async getResources(){
-    console.log(`GET REQUEST  /history/resources  ${new Date()}`)
-    const file = await this.historyService.getAllDataResources()
-    console.log(`GET RESPONSE  /history/resources ${new Date()}`, file)
-    return new StreamableFile(file);
+  async getResources(@Request() req: any){
+    const logger = new Logger()
+    try {
+      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'REQUEST', 'GetResources HistoryController')
+
+      const file = await this.historyService.getAllDataResources()
+
+      console.log(`GET RESPONSE => GetResources HistoryController =>  /history/resources ${new Date()}: \n`, file)
+      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'RESPONSE', 'GetResources HistoryController')
+
+      return new StreamableFile(file);
+    } catch (error) {
+      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'ERROR', 'GetResources HistoryController', JSON.stringify(error))
+      console.log("GetResources HistoryController [ERROR]: ", error);
+      return error
+    }
 
   }
 
   @Put('resources')
   @Header('content-type','application/zip')
   async updateDiffResource(@Body() json: object) {
-    console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
+    // console.log(`PUT REQUEST  /history/resources  ${new Date()}`)
     const file = await this.historyService.diffResource(json)
-    console.log(`PUT RESPONSE  /history/resources  ${new Date()}`, file)
+    // console.log(`PUT RESPONSE  /history/resources  ${new Date()}`, file)
     return new StreamableFile(file);
   }
 

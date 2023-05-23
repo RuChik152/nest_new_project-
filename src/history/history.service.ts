@@ -82,7 +82,9 @@ export class HistoryService {
 
   async getAllDataResources() {
     try {
-      return createReadStream(path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP));
+      //TODO для теста убрал чтение через ReadStream, посмотрим как будет работать с readFile
+      //return createReadStream(path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP));
+      return await readFile(path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP));
     } catch (error) {
       console.log("GetAllDataResources HistoryService [ERROR]: ", error);
     }

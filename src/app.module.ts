@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -12,6 +12,8 @@ import { HistoryModule } from './history/history.module';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import * as process from "process";
+import { LoggerMiddleware } from "./common/middleware/logger.middleware";
+import { HistoryController } from "./history/history.controller";
 
 process.env;
 
@@ -35,4 +37,10 @@ process.env;
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer): any {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes(HistoryController)
+  }
+}
