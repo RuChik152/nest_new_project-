@@ -24,7 +24,7 @@ export class MailService {
         },
       });
       const msg = await transporter.sendMail({
-        from: '"Fred Foo 👻" <info@belivr.tech>',
+        from: '"info 👻" <info@belivr.tech>',
         to: "info@nchernov.ru",
         subject: "Test Nest NODEMAILER",
         text: "Hello world?",
@@ -106,7 +106,6 @@ export class MailService {
       console.log('SEND REPEATE MASSGE: ', datauser)
       await this.mailerService.sendMail({
         to: datauser.email,
-        bcc: 'info@belivr.tech',
         subject: 'Welcome to Alpha Test!',
         template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
         attachments: [],
