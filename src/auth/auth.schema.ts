@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 
 
 export type AdminPanelUserDocument = HydratedDocument<AdminPanelUser>;
@@ -21,12 +21,17 @@ export class AdminPanelUser {
     default: ['user']
   })
   group?: string[]
+
+  @Prop({required:false})
+  access_token?: string | null
+
+  @Prop({required:false})
+  refresh_token?: string | null
 }
 
 export const AdminPanelUserSchema = SchemaFactory.createForClass(AdminPanelUser)
 
 AdminPanelUserSchema.pre("save", async function(next) {
-  const hash = await bcrypt.hash(this.pass, 10)
-  this.pass = hash;
+  this.pass = await bcrypt.hash(this.pass, 10);
   next();
 })
