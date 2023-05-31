@@ -41,8 +41,8 @@ export class AuthService {
         const check = await bcrypt.compare(userData.pass,user.pass)
         console.log('CHECK',check)
         if (check) {
-          const refreshToken = jwt.sign({login: user.login}, process.env.JWT_CONSTANT_REFRESH_TOKEN, {expiresIn: '5m'})
-          const accessToken = jwt.sign({login: user.login}, process.env.JWT_CONSTANT_ACCESS_TOKEN, {expiresIn: '1m'})
+          const refreshToken = jwt.sign({login: user.login}, process.env.JWT_CONSTANT_REFRESH_TOKEN, {expiresIn: '12h'})
+          const accessToken = jwt.sign({login: user.login}, process.env.JWT_CONSTANT_ACCESS_TOKEN, {expiresIn: '1h'})
 
           await this.adminPanelUserModel.findOneAndUpdate({login: userData.login}, {access_token: accessToken, refresh_token: refreshToken })
           console.log('ACCESS TOKEN: ', accessToken)
