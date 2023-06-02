@@ -17,7 +17,7 @@ export class HistoryService {
       await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, data.name, `${data.name}.txt`), data.text, { encoding: "utf8" });
       return true;
     } catch (error) {
-      console.log("ERROR: ", error);
+      console.log(`[${new Date().toJSON()}] Creat HistoryService [ERROR]: `, error);
       return error;
     }
   }
@@ -38,13 +38,13 @@ export class HistoryService {
 
       await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, "resource_map.json"), JSON.stringify(dirList.JSONdata), { encoding: "utf-8" });
 
-      console.log("Hash HistoryService: process.env.PATH_STORAGE_HISTORYS => ", process.env.PATH_STORAGE_HISTORYS);
-      console.log("Hash HistoryService: process.env.PATH_STORAGE_HISTORYS_ZIP => ", process.env.PATH_STORAGE_HISTORYS_ZIP);
+      console.log(`[${new Date().toJSON()}] Hash HistoryService: process.env.PATH_STORAGE_HISTORYS => `, process.env.PATH_STORAGE_HISTORYS);
+      console.log(`[${new Date().toJSON()}] Hash HistoryService: process.env.PATH_STORAGE_HISTORYS_ZIP => `, process.env.PATH_STORAGE_HISTORYS_ZIP);
       await new Compressor(path.resolve(process.env.PATH_STORAGE_HISTORYS), path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP)).zip();
 
       return true;
     } catch (error) {
-      console.error("Hash HistoryService [ERROR]: ", error);
+      console.error(`[${new Date().toJSON()}] Hash HistoryService [ERROR]: `, error);
     }
   }
 
@@ -76,7 +76,7 @@ export class HistoryService {
 
       return await readFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, nameHistory, `hash`), { encoding: "utf8" });
     } catch (error) {
-      console.log("UpdateHash HistoryService [ERROR]: ", error);
+      console.log(`[${new Date().toJSON()}] UpdateHash HistoryService [ERROR]: `, error);
     }
   }
 
@@ -86,7 +86,7 @@ export class HistoryService {
       //return createReadStream(path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP));
       return await readFile(path.resolve(process.env.PATH_STORAGE_HISTORYS_ZIP));
     } catch (error) {
-      console.log("GetAllDataResources HistoryService [ERROR]: ", error);
+      console.log(`[${new Date().toJSON()}] GetAllDataResources HistoryService [ERROR]: `, error);
     }
   }
 
@@ -162,7 +162,7 @@ export class HistoryService {
       await updateResourceMapAndCreateNewZip()
       return true
     }catch (error) {
-      console.log("DeleteHistory HistoryService [ERROR]: ", error);
+      console.log(`[${new Date().toJSON()}] DeleteHistory HistoryService [ERROR]: `, error);
       return error
     }
   }
@@ -172,7 +172,7 @@ export class HistoryService {
       const map = await readFile(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, 'resource_map.json'), {encoding: "utf-8"})
       return JSON.parse(map)[name]
     } catch (error) {
-      console.log("GetDataHistory HistoryService [ERROR]: ", error);
+      console.log(`[${new Date().toJSON()}] GetDataHistory HistoryService [ERROR]: `, error);
       return error
     }
 

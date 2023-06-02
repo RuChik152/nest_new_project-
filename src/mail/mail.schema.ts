@@ -25,6 +25,12 @@ export class User {
   })
   sendstatus?: boolean
 
+  @Prop({
+    default: false,
+    required: false
+  })
+  news: boolean
+
 }
 
 export const MailerUserSchema = SchemaFactory.createForClass(User)

@@ -19,7 +19,7 @@ export class MailController {
     try {
       return await this.mailService.creatUserData(datauser)
     } catch (error) {
-      console.log('FirstRegUserPlatform MailController ERROR: ', error)
+      console.log(`[${new Date().toJSON()}] FirstRegUserPlatform MailController ERROR: `, error)
     }
 
   }
@@ -28,11 +28,11 @@ export class MailController {
   @Get('platform/:email/:name/:platform')
   async sendMailerSelectPlatform(@Param('email') email: string, @Param('name') name: string, @Param('platform') platform: string){
     try {
-      console.log('DATA: ', [email, name, platform])
+      console.log(`[${new Date().toJSON()}] SendMailerSelectPlatform MailController: `, [email, name, platform])
       return await this.mailService.sendUserSelectPlatform({email, name, platform})
       // return await this.mailService.sendMailUserSelectPlatform({email, name, platform})
     } catch (error) {
-      console.log('SendMailerPico MailController ERROR: ', error)
+      console.log(`[${new Date().toJSON()}] SendMailerPico MailController ERROR: `, error)
       return error
     }
   }
@@ -42,9 +42,15 @@ export class MailController {
       try {
           return await this.mailService.sendRepateEmail(params)
       } catch (error) {
-        console.log('SendRepeat MailController ERROR: ', error)
+        console.log(`[${new Date().toJSON()}] SendRepeat MailController ERROR: `, error)
         return error
       }
   }
+
+  @Get('newsletter')
+  async newsletter(){
+
+  }
+
 
 }

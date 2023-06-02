@@ -20,4 +20,9 @@ export class CreateMailDto {
   @IsOptional()
   @IsString()
   sendstatus?: boolean
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  news?:boolean
 }

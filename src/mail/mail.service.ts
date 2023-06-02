@@ -1,21 +1,23 @@
-import { Injectable } from "@nestjs/common";
-import * as nodemailer from "nodemailer";
-import { MailerService } from "@nestjs-modules/mailer";
-import { changeTamplatePlatfoprm } from "./mail.utils";
-import { InjectModel } from "@nestjs/mongoose";
-import { User, UserMailerDocument } from "./mail.schema";
-import { Model } from "mongoose";
-import { CreateMailDto } from "./dto/create-mail.dto";
-
+import { Injectable } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
+import { MailerService } from '@nestjs-modules/mailer';
+import { changeTamplatePlatfoprm } from './mail.utils';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserMailerDocument } from './mail.schema';
+import { Model } from 'mongoose';
+import { CreateMailDto } from './dto/create-mail.dto';
 
 @Injectable()
 export class MailService {
-  constructor(private mailerService: MailerService, @InjectModel(User.name) private mailerUserModel: Model<UserMailerDocument>) {}
+  constructor(
+    private mailerService: MailerService,
+    @InjectModel(User.name) private mailerUserModel: Model<UserMailerDocument>,
+  ) {}
 
   async sendMail() {
     try {
       const transporter = nodemailer.createTransport({
-        host: "smtppro.zoho.com",
+        host: 'smtppro.zoho.com',
         port: 465,
         secure: true,
         auth: {
@@ -25,85 +27,84 @@ export class MailService {
       });
       const msg = await transporter.sendMail({
         from: '"info 👻" <info@belivr.tech>',
-        to: "info@nchernov.ru",
-        subject: "Test Nest NODEMAILER",
-        text: "Hello world?",
-        html: "<b>Hello world?</b>",
+        to: 'info@nchernov.ru',
+        subject: 'Test Nest NODEMAILER',
+        text: 'Hello world?',
+        html: '<b>Hello world?</b>',
       });
 
-      console.log("Message sent: %s", msg.messageId);
-      console.log("Message INFO: ", msg);
+      console.log(`[${new Date().toJSON()}] Message sent: %s`, msg.messageId);
+      console.log(`[${new Date().toJSON()}] Message INFO: `, msg);
 
-      return msg
+      return msg;
     } catch (error) {
-      console.log("Main MailService ERROR: ", error);
-      return error
+      console.log(`[${new Date().toJSON()}] Main MailService ERROR: `, error);
+      return error;
     }
-
   }
 
-  async creatUserData(datauser: CreateMailDto){
-    console.log('data user', datauser)
+  async creatUserData(datauser: CreateMailDto) {
     try {
       const user = await this.mailerUserModel.findOne({
-        email: datauser.email
-      })
+        email: datauser.email,
+      });
 
-      console.log('USER', user)
-
-      if(!user) {
-        return await this.mailerUserModel.create(datauser)
+      if (!user) {
+        return await this.mailerUserModel.create(datauser);
       } else {
-        return user
+        return user;
       }
-
     } catch (error) {
-      console.log('CreatUserData MailService ERROR: ', error)
-      return error
+      console.log(`[${new Date().toJSON()}] CreatUserData MailService ERROR: `, error);
+      return error;
     }
-
   }
 
-  async sendUserSelectPlatform(datauser: CreateMailDto ) {
+  async sendUserSelectPlatform(datauser: CreateMailDto) {
     try {
-      const checkSend = await this.mailerUserModel.findOne({email: datauser.email})
-      if(checkSend.sendstatus !== true) {
-        const user = await this.mailerUserModel.findOneAndUpdate({
-          email: datauser.email
-        }, {platform: datauser.platform, sendstatus: true})
-        if(user) {
-          await this.mailerService.sendMail({
-            to: datauser.email,
-            subject: 'Welcome to Alpha Test!',
-            template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
-            attachments: [],
-            headers: [{key: "X-Image-Url", value: "https://img-fotki.yandex.ru/get/15599/210509346.df/0_19b12b_992ece27_XS.png"}],
-            context: {
-              name: datauser.name,
+      const checkSend = await this.mailerUserModel.findOne({
+        email: datauser.email,
+      });
+      if (checkSend.sendstatus !== true) {
+        const email = await this.mailerService.sendMail({
+          to: datauser.email,
+          subject: 'Welcome to Alpha Test!',
+          template: changeTamplatePlatfoprm(datauser.platform), // `.hbs` extension is appended automatically
+          attachments: [],
+          headers: [
+            {
+              key: 'X-Image-Url',
+              value:
+                'https://img-fotki.yandex.ru/get/15599/210509346.df/0_19b12b_992ece27_XS.png',
             },
-          })
-          return {status: 250}
+          ],
+          context: {
+            name: datauser.name,
+          },
+        });
+        console.log(`[${new Date().toJSON()}] SEND EMAIL from : ${datauser.email}: `, email.response);
+        if (email) {
+          await this.mailerUserModel.findOneAndUpdate(
+            { email: datauser.email },
+            { platform: datauser.platform, sendstatus: true },
+          );
         }
+        return { status: 250 };
       }
-      return {status: 250}
+      return { status: 250 };
     } catch (error) {
-      console.log('SendUserSelectPlatform MailService ERROR: ', error)
-      return error
+      await this.mailerUserModel.findOneAndUpdate(
+        { email: datauser.email },
+        { platform: datauser.platform, sendstatus: false }
+      )
+      console.log(`[${new Date().toJSON()}] SendUserSelectPlatform MailService ERROR: `, error);
+      return error;
     }
   }
-
-  // async sendMailUserSelectPlatform(datauser: CreateMailDto ){
-  //   try {
-  //     console.log('DATA: ', datauser)
-  //   }catch (error) {
-  //     console.log('SendMailUserSelectPlatform MailService ERROR: ', error)
-  //     return error
-  //   }
-  // }
 
   async sendRepateEmail(datauser: CreateMailDto) {
     try {
-      console.log('SEND REPEATE MASSGE: ', datauser)
+      console.log(`[${new Date().toJSON()}] SEND REPEAT MASSAGE: `, datauser);
       await this.mailerService.sendMail({
         to: datauser.email,
         subject: 'Welcome to Alpha Test!',
@@ -112,12 +113,16 @@ export class MailService {
         context: {
           name: datauser.name,
         },
-      })
-      return { status: 250 }
+      });
+      return { status: 250 };
     } catch (error) {
-      console.log('SendRepateEmail MailService ERROR: ', error)
-      return error
+      console.log(` [${new Date().toJSON()}] SendRepateEmail MailService ERROR: `, error);
+      return error;
     }
+  }
+
+  consentNewsLetter(user: string | string[]) {
+
   }
 
 }

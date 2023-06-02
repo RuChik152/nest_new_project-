@@ -62,7 +62,7 @@ export class AuthService {
 
   async token(tokenData: TokenAuthDto) {
     try {
-      const accessToken = jwt.sign({login: tokenData.login}, process.env.JWT_CONSTANT_ACCESS_TOKEN, {expiresIn: '1m'})
+      const accessToken = jwt.sign({login: tokenData.login}, process.env.JWT_CONSTANT_ACCESS_TOKEN, {expiresIn: '1h'})
       const {access_token, refresh_token} = await this.adminPanelUserModel.findOneAndUpdate({login: tokenData.login}, {access_token: accessToken})
       return {access_token, refresh_token}
     } catch (error) {
