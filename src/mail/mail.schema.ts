@@ -25,6 +25,9 @@ export class User {
   })
   sendstatus?: boolean
 
+  @Prop()
+  auth_data:any[]
+
   @Prop({
     default: false,
     required: false

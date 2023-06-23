@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { MailService } from './mail.service';
-import { CreateMailDto } from './dto/create-mail.dto';
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { MailService } from "./mail.service";
+import { CreateMailDto } from "./dto/create-mail.dto";
 
 
 @Controller('mail')
@@ -14,9 +14,24 @@ export class MailController {
     // return true
   }
 
+  @Get('usr/:id')
+  async getUserInfo(@Param('id') id: string) {
+    console.log('getUserInfo: ', id)
+    try {
+      // return await this.mailService.getUser(id);
+      return await this.mailService.deleteUser(id)
+    } catch (error) {
+      console.log(`[${new Date().toJSON()}] GetUserInfo MailController ERROR: `, error)
+    }
+  }
+
+
+
+
   @Post('usr')
   async firstRegUserPlatform(@Body() datauser: CreateMailDto){
     try {
+      console.log('datauser: ', datauser)
       return await this.mailService.creatUserData(datauser)
     } catch (error) {
       console.log(`[${new Date().toJSON()}] FirstRegUserPlatform MailController ERROR: `, error)

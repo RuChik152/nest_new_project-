@@ -1,5 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsArray, IsObject, IsOptional, IsString } from "class-validator";
+
+export type User_id_Type = {
+  user_id: string,
+  provider: string,
+}
 
 export class CreateMailDto {
 
@@ -15,6 +20,11 @@ export class CreateMailDto {
   @IsOptional()
   @IsString()
   platform?: string
+
+  @ApiProperty()
+  @IsObject()
+  @IsOptional()
+  auth_data?: User_id_Type
 
   @ApiProperty()
   @IsOptional()

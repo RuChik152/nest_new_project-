@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { MailerService } from '@nestjs-modules/mailer';
-import { changeTamplatePlatfoprm } from './mail.utils';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserMailerDocument } from './mail.schema';
-import { Model } from 'mongoose';
-import { CreateMailDto } from './dto/create-mail.dto';
+import { Injectable } from "@nestjs/common";
+import * as nodemailer from "nodemailer";
+import { MailerService } from "@nestjs-modules/mailer";
+import { changeTamplatePlatfoprm } from "./mail.utils";
+import { InjectModel } from "@nestjs/mongoose";
+import { User, UserMailerDocument } from "./mail.schema";
+import { Model } from "mongoose";
+import { CreateMailDto } from "./dto/create-mail.dto";
 
 @Injectable()
 export class MailService {
@@ -49,9 +49,11 @@ export class MailService {
         email: datauser.email,
       });
 
+
       if (!user) {
         return await this.mailerUserModel.create(datauser);
       } else {
+        await this.mailerUserModel.findOneAndUpdate({ email: datauser.email }, { $addToSet: { auth_data: datauser.auth_data} })
         return user;
       }
     } catch (error) {
@@ -123,6 +125,26 @@ export class MailService {
 
   consentNewsLetter(user: string | string[]) {
 
+  }
+
+  async getUser(id: string) {
+      try {
+        return await this.mailerUserModel.findOne({
+          'auth_data.user_id': { $eq: id }
+        });
+      } catch (error) {
+        console.log(`[${new Date().toJSON()}] GetUser MailService ERROR: `, error);
+      }
+  }
+
+  async deleteUser(id:string) {
+    try {
+      return await this.mailerUserModel.deleteOne({
+        'auth_data.user_id': { $eq: id }
+      })
+    } catch (error) {
+      console.log(`[${new Date().toJSON()}] DeleteUser MailService ERROR: `, error);
+    }
   }
 
 }

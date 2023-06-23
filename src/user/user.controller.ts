@@ -12,6 +12,8 @@ import { UserVerifyDto, UserVerifyResponse } from './user_verify.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+
+
   @Post('/verify')
   @ApiOkResponse({
     status: 200,

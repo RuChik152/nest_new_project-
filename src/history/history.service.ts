@@ -158,22 +158,22 @@ export class HistoryService {
 
   async deleteHistory(name: string) {
     try {
-      await rm(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, name), {force: true, recursive: true})
-      await updateResourceMapAndCreateNewZip()
-      return true
-    }catch (error) {
+      await rm(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, name), { force: true, recursive: true });
+      await updateResourceMapAndCreateNewZip();
+      return true;
+    } catch (error) {
       console.log(`[${new Date().toJSON()}] DeleteHistory HistoryService [ERROR]: `, error);
-      return error
+      return error;
     }
   }
 
   async getDataHistory(name: string) {
     try {
-      const map = await readFile(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, 'resource_map.json'), {encoding: "utf-8"})
-      return JSON.parse(map)[name]
+      const map = await readFile(path.resolve(`${process.env.PATH_STORAGE_HISTORYS}`, "resource_map.json"), { encoding: "utf-8" });
+      return JSON.parse(map)[name];
     } catch (error) {
       console.log(`[${new Date().toJSON()}] GetDataHistory HistoryService [ERROR]: `, error);
-      return error
+      return error;
     }
 
 
