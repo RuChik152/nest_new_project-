@@ -9,12 +9,15 @@ import * as path from "path";
 import { CreateHistoryDto } from "./dto/create-history.dto";
 
 
+
 @Injectable()
 export class HistoryService {
-  async creat(data: any) {
+  async creat(data: CreateHistoryDto) {
     try {
       await mkdir(path.resolve(process.env.PATH_STORAGE_HISTORYS, data.name), { recursive: true });
       await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, data.name, `${data.name}.txt`), data.text, { encoding: "utf8" });
+      await writeFile(path.resolve(process.env.PATH_STORAGE_HISTORYS, data.name, "lvl"), String(data.lvl), { encoding: "utf8" });
+
       return true;
     } catch (error) {
       console.log(`[${new Date().toJSON()}] Creat HistoryService [ERROR]: `, error);

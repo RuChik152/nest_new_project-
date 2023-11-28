@@ -1,6 +1,10 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateHistoryDto {
+
+  @IsNumber()
+  @IsOptional()
+  lvl?: number;
 
   @IsString()
   @IsOptional()
