@@ -5,7 +5,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { resolve } from "path";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { MongooseModule } from "@nestjs/mongoose";
-import { MailerUserSchema, User } from "./mail.schema";
+import { MailerUserSchema, MailUser } from "./mail.schema";
 
 @Global()
 @Module({
@@ -35,7 +35,7 @@ import { MailerUserSchema, User } from "./mail.schema";
 
     }),
     MongooseModule.forFeature([
-      {name: User.name, schema: MailerUserSchema}
+      {name: MailUser.name, schema: MailerUserSchema}
     ]),
   ],
   controllers: [MailController],

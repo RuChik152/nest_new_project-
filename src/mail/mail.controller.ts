@@ -10,8 +10,6 @@ export class MailController {
   @Get()
  async send(){
      return await this.mailService.sendMail()
-    // this.mailService.example()
-    // return true
   }
 
   @Get('usr/:id')
@@ -40,6 +38,9 @@ export class MailController {
   }
 
 
+  /*
+  * Эндпоинт для записи email,имени,платформы в базу данных
+  */
   @Get('platform/:email/:name/:platform')
   async sendMailerSelectPlatform(@Param('email') email: string, @Param('name') name: string, @Param('platform') platform: string){
     try {

@@ -3,7 +3,8 @@ import * as nodemailer from "nodemailer";
 import { MailerService } from "@nestjs-modules/mailer";
 import { changeTamplatePlatfoprm } from "./mail.utils";
 import { InjectModel } from "@nestjs/mongoose";
-import { User, UserMailerDocument } from "./mail.schema";
+import { MailUser, UserMailerDocument } from "./mail.schema";
+//import {User, UserDocument} from "../user/entities/user.schema"
 import { Model } from "mongoose";
 import { CreateMailDto } from "./dto/create-mail.dto";
 
@@ -11,7 +12,7 @@ import { CreateMailDto } from "./dto/create-mail.dto";
 export class MailService {
   constructor(
     private mailerService: MailerService,
-    @InjectModel(User.name) private mailerUserModel: Model<UserMailerDocument>,
+    @InjectModel(MailUser.name) private mailerUserModel: Model<UserMailerDocument>,
   ) {}
 
   async sendMail() {

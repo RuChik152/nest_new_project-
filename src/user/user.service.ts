@@ -1,52 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './user.schema';
-import { Model } from 'mongoose';
-import { UserVerifyDto } from './user_verify.dto';
-import { HttpService } from '@nestjs/axios';
-import axios from 'axios';
+import { Injectable } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { User, UserDocument } from "./entities/user.schema";
+import { Model, QueryOptions } from "mongoose";
+import { Device, DeviceDocument } from "../device/entities/device.schema";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly httpService: HttpService,
-  ) {}
-
-  async getInfoUser(id: string) {
-    const user = await this.userModel.findById(id);
-    return user;
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
+    @InjectModel(Device.name)
+    private deviceModel: Model<DeviceDocument>
+  ) {
   }
 
-  async updateInfoUser(body) {
-    await this.userModel.findOneAndUpdate({ _id: body.id }, body);
-    const user = await this.userModel.findOne({ _id: body.id });
-    return user;
+  /*
+   * Создание пользователя
+   */
+  async create(user: CreateUserDto) {
+    console.log("CREATE-2: ", user);
+    return await this.userModel.create(user);
   }
 
-  async verifyUserOculus(body: UserVerifyDto) {
+  /*
+  * Обновление данных пользователя
+  */
+  async update(user: UpdateUserDto) {
     try {
-      const response = await axios({
-        method: 'POST',
-        url: 'https://graph.oculus.com/user_nonce_validate',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Accept: '*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          Connection: 'keep-alive',
-        },
-        data: {
-          access_token: `OC|${process.env.APP_ID}|${process.env.APP_SECRET}`,
-          nonce: `${body.nonce}`,
-          user_id: `${body.userID}`,
-        },
-      });
+      const filter: UpdateUserDto = { email: user.email };
+      const update: UpdateUserDto = user;
+      const options: QueryOptions = { new: true, upsert: true, setDefaultsOnInsert: true };
 
-      return response.data;
+      return await this.userModel.findOneAndUpdate(filter, update, options);
     } catch (error) {
-      //TODO need create logger
-      console.log('ERROR', error.response.data);
-      return error.response.data;
+      return await error;
     }
   }
+
+  /*
+  * Привязка устройства к аккаунту пользователя
+  */
+  async bindingDevice(email: string, activateCode: string) {
+
+    const device = await this.deviceModel.findOne({ activateCode: activateCode });
+    const userUpdate = await this.userModel.findOneAndUpdate({ email: email }, { device: device }, { new: true });
+    const updateDevice = await this.deviceModel.findOneAndUpdate({ activateCode: activateCode }, {
+      activateCode: "",
+      user: userUpdate
+    });
+    return { userUpdate, updateDevice };
+  }
+
+
 }

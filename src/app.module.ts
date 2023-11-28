@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DownloadModule } from './download/download.module';
-import { UserModule } from './user/user.module';
 import { DevClientModule } from './dev-client/dev-client.module';
 import { AnaliticModule } from './analitic/analitic.module';
 import {MulterModule} from "@nestjs/platform-express";
@@ -14,6 +13,8 @@ import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import { LoggerMiddleware } from "./common/middleware/logger.middleware";
 import { HistoryController } from "./history/history.controller";
+import { UserModule } from './user/user.module';
+import { DeviceModule } from './device/device.module';
 
 process.env;
 
@@ -27,12 +28,13 @@ process.env;
       `${process.env.DB_METHOD}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/belivr_karga`,
     ),
     DownloadModule,
-    // UserModule,
     DevClientModule,
     AnaliticModule,
     HistoryModule,
     MailModule,
     AuthModule,
+    UserModule,
+    DeviceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

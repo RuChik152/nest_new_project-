@@ -17,6 +17,10 @@ export class DevClientService {
     return await this.devGameSettingModel.create(createDevClientDto);
   }
 
+  /*
+  * Получение параметров настроек из БД.
+  * Посик идет по ID
+   */
   async getSettingsDataDocument(documentId: string): Promise<GameSetting> {
     const { healthPoint, damage, shieldPoint } =
       await this.devGameSettingModel.findOne({ _id: documentId });
@@ -29,7 +33,6 @@ export class DevClientService {
   }
 
   async getDataFile() {
-
     const pathFile = resolve(process.cwd(), 'mock_data', 'gameSettings.json');
     return await readFile(pathFile, { encoding: 'utf-8' });
   }

@@ -1,12 +1,15 @@
+import {HydratedDocument} from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { Device } from "../../device/entities/device.schema";
+import * as mongoose from "mongoose";
 
-export type UserMailerDocument = HydratedDocument<MailUser>
+export type UserDocument = HydratedDocument<User>
 
 @Schema({
   timestamps: true
 })
-export class MailUser {
+export class User {
+
   @Prop()
   email: string
 
@@ -34,6 +37,12 @@ export class MailUser {
   })
   news: boolean
 
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Device'
+  })
+  device: Device
+
 }
 
-export const MailerUserSchema = SchemaFactory.createForClass(MailUser)
+export const UserSchema = SchemaFactory.createForClass(User)

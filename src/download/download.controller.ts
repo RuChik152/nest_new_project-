@@ -34,12 +34,6 @@ export class DownloadController {
     return file
   }
 
-  @Post('text')
-  uploadText(@Body() data: any){
-    console.log('DATA_TEXT', data)
-    return data
-  }
-
   @Post('files')
   @UseInterceptors(FileFieldsInterceptor([
     {name: 'file'},
