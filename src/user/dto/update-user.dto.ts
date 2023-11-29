@@ -29,5 +29,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString()
   news?: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  _id?: string
 
 }

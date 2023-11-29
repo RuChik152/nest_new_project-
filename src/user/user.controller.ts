@@ -19,7 +19,6 @@ export class UserController {
 
   @Post(':email/:name')
   create(@Param() user: CreateUserDto) {
-    console.log("CREATE: ", user)
     return this.userService.create(user)
   }
 

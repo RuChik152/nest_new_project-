@@ -18,9 +18,15 @@ export class DeviceService {
       const findDevice = await this.deviceModel.findOne(filter);
 
       if (findDevice === null) {
-        return this.deviceModel.create(device);
+        const newDevice =  await this.deviceModel.create(device);
+        return await this.deviceModel.findOne({ deviceId: newDevice.deviceId }, "deviceId activateCode -_id");
       } else {
-        return findDevice;
+        if(findDevice.activateCode.length === 0) {
+          return await this.deviceModel.findOne({deviceId: device.deviceId},"deviceId -_id").populate({ path: "user", select: "email name platform -_id" });
+        } else {
+          return await this.deviceModel.findOne({deviceId: device.deviceId},"deviceId activateCode -_id").populate({ path: "user", select: "email name platform -_id" });
+        }
+
       }
 
     } catch (error) {
