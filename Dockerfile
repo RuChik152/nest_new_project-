@@ -20,7 +20,6 @@ COPY --from=builder /backend/node_modules ./node_modules
 COPY --from=builder /backend/tsconfig.json ./tsconfig.json
 COPY --from=builder /backend/tsconfig.build.json ./tsconfig.build.json
 COPY --from=builder /backend/nest-cli.json ./nest-cli.json
-COPY --from=builder /backend/mock_data ./mock_data
 COPY --from=builder /backend/.prettierrc ./.prettierrc
 COPY --from=builder /backend/.eslintrc.js ./.eslintrc.js
 

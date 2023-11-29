@@ -22,7 +22,7 @@ export default class Logger {
   ) {
     let str = `[INFO] [${new Date().toJSON()}] [SOURCE: ${source}] [${type}] [METHOD: ${method}]  [PATH: ${pathDir}] [HEADERS: ${headers}] DATA: ${data}\n`;
 
-    await appendFile(path.resolve(process.env.PATH_LOG_FILE, 'logs.log'), str, {
+    await appendFile(path.resolve("./logs", 'logs.log'), str, {
       encoding: 'utf8',
     });
   }
