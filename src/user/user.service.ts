@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.schema';
 import { Model, QueryOptions } from 'mongoose';
 import { Device, DeviceDocument } from '../device/entities/device.schema';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -16,10 +17,21 @@ export class UserService {
   ) {}
 
   /*
-   * Создание пользователя
+   * Проверка пользователя, если пользователя нет, то создаетьсяв БД,
+   * если есть то отдаеться найденный
    */
-  async create(user: CreateUserDto) {
-    return await this.userModel.create(user);
+  async checkUser(user: CreateUserDto) {
+    try {
+      const check = await this.userModel
+        .findOne({email: user.email}).populate("device");
+      if (check === null) {
+        return await this.userModel.create(user);
+      } else {
+        return check;
+      }
+    } catch (error) {
+      return error;
+    }
   }
 
   /*
@@ -57,10 +69,23 @@ export class UserService {
       { activateCode: activateCode },
       {
         user: userUpdate,
-        activateCode: "",
+        activateCode: '',
       },
       { new: true },
     );
-    return { userUpdate, updateDevice };
+    return this.userModel.findOne({email: email}).populate("device");
+  }
+
+  /*
+   * Получение данных о пользователе
+   */
+  async getUser(user: UpdateUserDto) {
+    try {
+      return await this.userModel
+        .findOne({ email: user.email }, "-createdAt -updatedAt -__v")
+        .populate({ path: 'device', select: 'deviceId -_id' });
+    } catch (error) {
+      return error;
+    }
   }
 }

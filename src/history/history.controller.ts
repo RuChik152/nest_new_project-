@@ -115,12 +115,7 @@ export class HistoryController {
   async getResources(@Request() req: any){
     const logger = new Logger()
     try {
-      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'REQUEST', 'GetResources HistoryController')
-
       const file = await this.historyService.getAllDataResources()
-
-      console.log(`GET RESPONSE => GetResources HistoryController =>  /history/resources ${new Date().toJSON()}: \n`, file)
-      await logger.readLog(req.method,req.url,JSON.stringify(req.headers),'RESPONSE', 'GetResources HistoryController')
 
       return new StreamableFile(file);
     } catch (error) {
