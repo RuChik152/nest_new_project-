@@ -3,11 +3,20 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from "@nestjs/swagger";
+import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  /*
+   * Точка входы для получения списка всех пользователей и формирования данных для турнирной таблицы
+   */
+  @Get('list/:email')
+  getUsers(@Param() user: UpdateUserDto) {
+    return this.userService.getUsers(user);
+  }
 
   @Get(':email')
   getUser(@Param() user: UpdateUserDto){
@@ -15,8 +24,8 @@ export class UserController {
   }
 
   @Patch('binding/:email/:activateCode')
-  binding(@Param('email') email: string, @Param('activateCode') activateCode: string){
-      return this.userService.bindingDevice(email, activateCode)
+  binding(@Param() user: UpdateUserDto, @Param() device: UpdateDeviceDto){
+      return this.userService.bindingDevice(user, device)
   }
 
   @Patch()

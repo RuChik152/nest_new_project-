@@ -25,6 +25,16 @@ export class Device {
   activateCode: string;
 
   @Prop({
+    default: 0
+  })
+  gold: number;
+
+  @Prop({
+    default: 0
+  })
+  score: number;
+
+  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })

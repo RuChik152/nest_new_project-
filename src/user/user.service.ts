@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.schema';
 import { Model, QueryOptions } from 'mongoose';
 import { Device, DeviceDocument } from '../device/entities/device.schema';
-import { use } from 'passport';
+import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 
 @Injectable()
 export class UserService {
@@ -23,7 +23,8 @@ export class UserService {
   async checkUser(user: CreateUserDto) {
     try {
       const check = await this.userModel
-        .findOne({email: user.email}).populate("device");
+        .findOne({ email: user.email })
+        .populate('device');
       if (check === null) {
         return await this.userModel.create(user);
       } else {
@@ -56,24 +57,26 @@ export class UserService {
   /*
    * Привязка устройства к аккаунту пользователя
    */
-  async bindingDevice(email: string, activateCode: string) {
+  async bindingDevice(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
     const device = await this.deviceModel.findOne({
-      activateCode: activateCode,
+      activateCode: deviceDTO.activateCode,
     });
     const userUpdate = await this.userModel.findOneAndUpdate(
-      { email: email },
+      { email: userDTO.email },
       { device: device },
       { new: true },
     );
     const updateDevice = await this.deviceModel.findOneAndUpdate(
-      { activateCode: activateCode },
+      { activateCode: deviceDTO.activateCode },
       {
         user: userUpdate,
         activateCode: '',
       },
       { new: true },
     );
-    return this.userModel.findOne({email: email}).populate("device");
+    //return this.userModel.findOne({ email: user.email }).populate('device');
+
+    return await this.getUsers(userDTO)
   }
 
   /*
@@ -82,10 +85,48 @@ export class UserService {
   async getUser(user: UpdateUserDto) {
     try {
       return await this.userModel
-        .findOne({ email: user.email }, "-createdAt -updatedAt -__v")
-        .populate({ path: 'device', select: 'deviceId -_id' });
+        .findOne({ email: user.email }, '-createdAt -updatedAt -__v -_id')
+        .populate({
+          path: 'device',
+          select: '-_id -__v -createdAt -updatedAt -user',
+        })
+        .lean();
     } catch (error) {
       return error;
     }
+  }
+
+  /*
+   * Получение, сортировка данных для турнироной таблицы
+   */
+  async getUsers(dataUser: UpdateUserDto) {
+    const user = await this.getUser(dataUser);
+    const usersList = await this.userModel
+      .find({}, '-createdAt -updatedAt -__v -_id')
+      .populate({
+        path: 'device',
+        select: '-_id -__v -createdAt -updatedAt -user',
+      })
+      .lean();
+
+    function addPosition(user: any, list: any[]) {
+      user.position = list.findIndex((el) => el.email === user.email) + 1;
+      return user;
+    }
+
+    const listUser = usersList
+      .filter((el) => {
+        return el.hasOwnProperty('device') && el.device.hasOwnProperty('score');
+      })
+      .sort((a, b) => {
+        return b.device.score - a.device.score;
+      });
+
+    const userData = addPosition(user, listUser);
+
+    return {
+      list: listUser,
+      user: userData,
+    };
   }
 }

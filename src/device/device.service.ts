@@ -3,7 +3,7 @@ import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Device, DeviceDocument } from './entities/device.schema';
-import { Model } from 'mongoose';
+import { Model, QueryOptions } from "mongoose";
 
 @Injectable()
 export class DeviceService {
@@ -40,5 +40,14 @@ export class DeviceService {
     } catch (error) {
       return error;
     }
+  }
+
+  async update(device: CreateDeviceDto, data: UpdateDeviceDto) {
+    const update: UpdateDeviceDto = data;
+    const filter: CreateDeviceDto = device;
+    const field =  "-_id -createdAt -updatedAt -__v";
+
+    await this.deviceModel.findOneAndUpdate(filter, update);
+    return this.deviceModel.findOne(filter, field).populate({path: "user", select: field});
   }
 }
