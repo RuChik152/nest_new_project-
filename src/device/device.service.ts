@@ -32,9 +32,11 @@ export class DeviceService {
           return await this.deviceModel
             .findOne(
               { deviceId: device.deviceId },
-              'deviceId activateCode -_id',
+              '-_id -createdAt -updatedAt -__v',
             )
-            .populate({ path: 'user', select: 'email name platform -_id' });
+            .populate({ path: 'user', select: 'email name platform -_id' })
+            .populate({ path: 'left_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
+            .populate({ path: 'right_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
         }
       }
     } catch (error) {

@@ -15,6 +15,7 @@ import { LoggerMiddleware } from "./common/middleware/logger.middleware";
 import { HistoryController } from "./history/history.controller";
 import { UserModule } from './user/user.module';
 import { DeviceModule } from './device/device.module';
+import { AchievementModule } from './achievement/achievement.module';
 
 process.env;
 
@@ -35,6 +36,7 @@ process.env;
     AuthModule,
     UserModule,
     DeviceModule,
+    AchievementModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,6 +6,7 @@ import { User, UserDocument } from './entities/user.schema';
 import { Model, QueryOptions } from 'mongoose';
 import { Device, DeviceDocument } from '../device/entities/device.schema';
 import { UpdateDeviceDto } from "../device/dto/update-device.dto";
+import { GolemType } from "../device/types/device.types";
 
 @Injectable()
 export class UserService {
@@ -70,13 +71,29 @@ export class UserService {
       { activateCode: deviceDTO.activateCode },
       {
         user: userUpdate,
-        activateCode: '',
       },
       { new: true },
     );
     //return this.userModel.findOne({ email: user.email }).populate('device');
 
     return await this.getUsers(userDTO)
+  }
+
+  async bindingGolem(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
+    try {
+      const user = await this.userModel.findOne( { email: userDTO.email }).populate('device');
+      const friendDevice = await this.deviceModel.findOneAndUpdate({ activateCode: deviceDTO.activateCode },{ right_golem: user }, {new: true}).populate('user');
+
+      const myDevice = await this.deviceModel.findOneAndUpdate({deviceId: user.device.deviceId}, {left_golem: friendDevice.user}, {new: true})
+
+      return {
+        friend: friendDevice,
+        my: myDevice
+      }
+
+    } catch (error) {
+      return error
+    }
   }
 
   /*
@@ -128,5 +145,29 @@ export class UserService {
       list: listUser,
       user: userData,
     };
+  }
+
+  async deleteGolemBinding(deviceDTO: UpdateDeviceDto, golem: GolemType) {
+    try {
+      const myDevice = await this.deviceModel
+        .findOne({deviceId: deviceDTO.deviceId})
+        .populate({ path: 'user', select: 'email name platform -_id' })
+        .populate({ path: 'left_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
+        .populate({ path: 'right_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
+
+      switch (golem) {
+        case "right_golem":
+          await this.deviceModel.findOneAndUpdate({deviceId: myDevice.right_golem.device.deviceId}, { $unset: { left_golem: 1 } });
+          return await this.deviceModel.findOneAndUpdate({deviceId: deviceDTO.deviceId}, { $unset: { right_golem: 1 } })
+        case "left_golem":
+          await this.deviceModel.findOneAndUpdate({deviceId: myDevice.left_golem.device.deviceId}, { $unset: { right_golem: 1 } });
+          return await this.deviceModel.findOneAndUpdate({deviceId: deviceDTO.deviceId}, { $unset: { left_golem: 1 } })
+      }
+
+
+
+    }catch (error) {
+      return error
+    }
   }
 }
