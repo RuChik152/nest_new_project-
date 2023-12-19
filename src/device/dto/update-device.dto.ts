@@ -19,4 +19,23 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @IsNumber()
   gold?: number;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  game_time?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  max_damage?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  victory?: number
 }

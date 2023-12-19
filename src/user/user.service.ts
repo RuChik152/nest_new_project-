@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.schema';
-import { Model, QueryOptions } from 'mongoose';
+import { Error, Model, QueryOptions } from "mongoose";
 import { Device, DeviceDocument } from '../device/entities/device.schema';
 import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 import { GolemType } from "../device/types/device.types";
@@ -60,31 +60,46 @@ export class UserService {
    */
   async bindingDevice(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
     const device = await this.deviceModel.findOne({
-      activateCode: deviceDTO.activateCode,
+      activateCode: deviceDTO.activateCode.toUpperCase(),
     });
-    const userUpdate = await this.userModel.findOneAndUpdate(
-      { email: userDTO.email },
-      { device: device },
-      { new: true },
-    );
-    const updateDevice = await this.deviceModel.findOneAndUpdate(
-      { activateCode: deviceDTO.activateCode },
-      {
-        user: userUpdate,
-      },
-      { new: true },
-    );
-    //return this.userModel.findOne({ email: user.email }).populate('device');
+    if(device) {
+      const userUpdate = await this.userModel.findOneAndUpdate(
+        { email: userDTO.email },
+        { device: device },
+        { new: true },
+      );
+      const updateDevice = await this.deviceModel.findOneAndUpdate(
+        { activateCode: deviceDTO.activateCode },
+        {
+          user: userUpdate,
+        },
+        { new: true },
+      );
+
+    }
 
     return await this.getUsers(userDTO)
+
   }
 
+  /*
+   * Привязка своего шлема к шлему друга, тем самым для друга это будет правый голем, для пользователя левый голем
+   */
   async bindingGolem(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
     try {
       const user = await this.userModel.findOne( { email: userDTO.email }).populate('device');
       const friendDevice = await this.deviceModel.findOneAndUpdate({ activateCode: deviceDTO.activateCode },{ right_golem: user }, {new: true}).populate('user');
 
-      const myDevice = await this.deviceModel.findOneAndUpdate({deviceId: user.device.deviceId}, {left_golem: friendDevice.user}, {new: true})
+      const myDevice = await this.deviceModel.findOneAndUpdate(
+        {
+          deviceId: user.device.deviceId
+        },
+        {
+          left_golem: friendDevice.user
+        },
+        {
+          new: true
+        })
 
       return {
         friend: friendDevice,
@@ -132,7 +147,8 @@ export class UserService {
     }
 
     const listUser = usersList
-      .filter((el) => {
+      .filter((el, index) => {
+        console.log(`ELEMENT ${index}:`, el)
         return el.hasOwnProperty('device') && el.device.hasOwnProperty('score');
       })
       .sort((a, b) => {

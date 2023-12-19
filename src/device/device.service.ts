@@ -49,7 +49,20 @@ export class DeviceService {
     const filter: CreateDeviceDto = device;
     const field =  "-_id -createdAt -updatedAt -__v";
 
-    await this.deviceModel.findOneAndUpdate(filter, update);
+    const currentDeviceData = await this.deviceModel.findOne(filter,
+      "-_id -deviceId -achievements -activateCode -createdAt -updatedAt -__v -user -left_golem -right_golem"
+    ).lean()
+
+    // const newDate = Object.assign(currentDeviceData, update)
+
+    for(let value in currentDeviceData) {
+      console.log("1", value)
+      if(update[`${value}`]) currentDeviceData[`${value}`] += update[`${value}`]
+    }
+
+    console.log("FINISH", currentDeviceData)
+
+    await this.deviceModel.findOneAndUpdate(filter, currentDeviceData);
     return this.deviceModel.findOne(filter, field).populate({path: "user", select: field});
   }
 }

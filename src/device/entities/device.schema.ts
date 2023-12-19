@@ -26,11 +26,13 @@ export class Device {
   activateCode: string;
 
   @Prop({
+    type: Number,
     default: 0
   })
   gold: number;
 
   @Prop({
+    type: Number,
     default: 0
   })
   score: number;
