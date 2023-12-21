@@ -4,11 +4,13 @@ import { UpdateDeviceDto } from './dto/update-device.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Device, DeviceDocument } from './entities/device.schema';
 import { Model, QueryOptions } from "mongoose";
+import { User, UserDocument } from "../user/entities/user.schema";
 
 @Injectable()
 export class DeviceService {
   constructor(
     @InjectModel(Device.name) private deviceModel: Model<DeviceDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   async check(device: CreateDeviceDto) {
@@ -64,5 +66,54 @@ export class DeviceService {
 
     await this.deviceModel.findOneAndUpdate(filter, currentDeviceData);
     return this.deviceModel.findOne(filter, field).populate({path: "user", select: field});
+  }
+
+  async deleteDevice(deviceDTO: UpdateDeviceDto) {
+    try {
+      const deleteDevice = await this.deviceModel
+        .findOne({deviceId: deviceDTO.deviceId})
+        .populate('user')
+        .populate({path: 'left_golem', populate: {path:'device'}})
+        .populate({path: 'right_golem', populate: {path: 'device'}})
+      console.log('DATA', deleteDevice)
+      if (deleteDevice) {
+        if(deleteDevice.left_golem) {
+          await this.deviceModel.findOneAndUpdate({deviceId: deleteDevice.left_golem.device.deviceId}, {$unset: {right_golem: 1}})
+        }
+
+        if (deleteDevice.right_golem){
+          await this.deviceModel.findOneAndUpdate({deviceId: deleteDevice.right_golem.device.deviceId}, {$unset: {left_golem: 1}})
+        }
+
+        if (deleteDevice.user) {
+          await this.userModel.findOneAndUpdate({email: deleteDevice.user.email}, { $unset: { device: 1 }})
+        }
+        
+        const device = await this.deviceModel.findOneAndDelete({deviceId: deviceDTO.deviceId})
+
+        return {
+          status: 200,
+          data: {
+            error: "",
+            device
+          }
+        }
+      } else {
+        return {
+          status: 404,
+          data: {
+            error: "Not Found"
+          }
+        }
+      }
+
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          error: error
+        }
+      }
+    }
   }
 }

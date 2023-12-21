@@ -1,10 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from "@nestjs/common";
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 import { GolemType } from "../device/types/device.types";
+import { Response } from "express";
+import { User } from "./entities/user.schema";
+
+
+
 
 @ApiTags('user')
 @Controller('user')
@@ -24,9 +29,13 @@ export class UserController {
       return this.userService.getUser(user)
   }
 
+  @ApiResponse({ status: 200, description: "Возвращаються обновленные данные по пользователю"})
+  @ApiResponse({ status: 404, description: "Аккаунт друга не активирован"})
+  @ApiResponse({ status: 500, description: "Ошибка сервера"})
   @Patch('binding/golem/:email/:activateCode')
-  golemBinding(@Param() user: UpdateUserDto, @Param() device: UpdateDeviceDto) {
-    return this.userService.bindingGolem(user, device);
+  async golemBinding(@Param() user: UpdateUserDto, @Param() device: UpdateDeviceDto, @Res() res: Response) {
+    const response = await this.userService.bindingGolem(user, device);
+    res.status(response.status).send(response.data)
   }
 
 
@@ -45,9 +54,17 @@ export class UserController {
     return this.userService.checkUser(user)
   }
 
+  @Delete('binding/:email/')
+  deleteBindingGolem(@Param() user: UpdateUserDto){
+      return this.userService.deleteBinding(user);
+  }
+
   @Delete('binding/:deviceId/:golem')
   deleteGolemBinding(@Param() device: UpdateDeviceDto, @Param('golem') golem: GolemType) {
       return this.userService.deleteGolemBinding(device,golem);
   }
+
+
+
 
 }

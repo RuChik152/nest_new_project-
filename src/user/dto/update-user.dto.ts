@@ -34,4 +34,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString()
   _id?: string
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  nickname?: string
+
 }
