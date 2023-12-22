@@ -18,6 +18,12 @@ export class User {
 
   @Prop({
     type: String,
+    default: "anonymous"
+  })
+  nickname: string
+
+  @Prop({
+    type: String,
     default: 'Not selected',
     required: false
   })

@@ -7,6 +7,7 @@ import { Error, Model, QueryOptions } from "mongoose";
 import { Device, DeviceDocument } from '../device/entities/device.schema';
 import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 import { GolemType } from "../device/types/device.types";
+import { use } from "passport";
 
 @Injectable()
 export class UserService {
@@ -63,23 +64,40 @@ export class UserService {
       activateCode: deviceDTO.activateCode.toUpperCase(),
     });
     if(device) {
-      const userUpdate = await this.userModel.findOneAndUpdate(
-        { email: userDTO.email },
-        { device: device },
-        { new: true },
-      );
-      const updateDevice = await this.deviceModel.findOneAndUpdate(
-        { activateCode: deviceDTO.activateCode },
-        {
-          user: userUpdate,
-        },
-        { new: true },
-      );
+      if(device.user) {
+        return {
+          status: 400,
+          data: {
+            error: "The user already has a binding"
+          }
+        }
+      }
+      else {
+        const userUpdate = await this.userModel.findOneAndUpdate(
+          { email: userDTO.email },
+          { device: device },
+          { new: true },
+        );
+        const updateDevice = await this.deviceModel.findOneAndUpdate(
+          { activateCode: deviceDTO.activateCode.toUpperCase() },
+          {
+            user: userUpdate,
+          },
+          { new: true },
+        );
 
+        const dataUsers = await this.getUsers(userDTO)
+
+        return {
+          status: 200,
+          data: {
+            error: "",
+            ...dataUsers
+          }
+        }
+
+      }
     }
-
-    return await this.getUsers(userDTO)
-
   }
 
   /*
@@ -88,26 +106,58 @@ export class UserService {
   async bindingGolem(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
     try {
       const user = await this.userModel.findOne( { email: userDTO.email }).populate('device');
-      const friendDevice = await this.deviceModel.findOneAndUpdate({ activateCode: deviceDTO.activateCode },{ right_golem: user }, {new: true}).populate('user');
+      const checkBindingUserDevice = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}).populate('user');
 
-      const myDevice = await this.deviceModel.findOneAndUpdate(
-        {
-          deviceId: user.device.deviceId
-        },
-        {
-          left_golem: friendDevice.user
-        },
-        {
-          new: true
-        })
-
-      return {
-        friend: friendDevice,
-        my: myDevice
+      if(checkBindingUserDevice.user) {
+        if(!checkBindingUserDevice.right_golem) {
+          const friendDevice = await this.deviceModel.findOneAndUpdate(
+            { activateCode: deviceDTO.activateCode.toUpperCase() },
+            { right_golem: user },
+            {new: true})
+            .populate('user');
+          const myDevice = await this.deviceModel.findOneAndUpdate(
+            { deviceId: user.device.deviceId },
+            { left_golem: friendDevice.user },
+            { new: true })
+          return {
+            status: 200,
+            data: {
+              error: "",
+              friend: friendDevice,
+              my: myDevice
+            }
+          }
+        }
+        else {
+          return {
+            status: 400,
+            data: {
+              error: "A friend's account already has a linked golem",
+              friend: await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}),
+              my: await this.deviceModel.findOne({ deviceId: user.device.deviceId })
+            }
+          }
+        }
+      } else {
+        return {
+          status: 404,
+          data: {
+            error: "The friend's account has not been activated. He needs to activate a friend's account before tying a golem to it.",
+            friend: checkBindingUserDevice,
+            my: user,
+          }
+        }
       }
 
     } catch (error) {
-      return error
+      return {
+        status: 500,
+        data: {
+          error: "SERVER ERROR",
+          friend: null,
+          my: null
+        }
+      }
     }
   }
 
@@ -149,7 +199,8 @@ export class UserService {
     const listUser = usersList
       .filter((el, index) => {
         console.log(`ELEMENT ${index}:`, el)
-        return el.hasOwnProperty('device') && el.device.hasOwnProperty('score');
+
+        return el.hasOwnProperty('device') && el.device !== null && el.device.hasOwnProperty('score');
       })
       .sort((a, b) => {
         return b.device.score - a.device.score;
@@ -163,6 +214,9 @@ export class UserService {
     };
   }
 
+  /*
+   * Отвязать голема
+   */
   async deleteGolemBinding(deviceDTO: UpdateDeviceDto, golem: GolemType) {
     try {
       const myDevice = await this.deviceModel
@@ -184,6 +238,30 @@ export class UserService {
 
     }catch (error) {
       return error
+    }
+  }
+
+  async deleteBinding(userDTO: UpdateUserDto) {
+    try {
+    const user = await this.userModel.findOne({email: userDTO.email}).populate({path: 'device', select: 'deviceId _id'})
+      if(user.device && user.device.deviceId) {
+        await this.deviceModel.findOneAndUpdate({deviceId: user.device.deviceId}, {$unset: {user: 1}})
+        await this.userModel.findOneAndUpdate({email: userDTO.email}, {$unset: {device: 1}})
+        return {
+          status: 200,
+          error: "",
+        }
+      } else {
+        return {
+          status: 404,
+          error: "Device not found",
+        }
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        error: error
+      }
     }
   }
 }
