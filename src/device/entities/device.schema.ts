@@ -18,8 +18,13 @@ export class Device {
     length: 4,
     type: String,
     default: () => {
-      const bytes = randomBytes(2);
-      return bytes.toString('hex').toUpperCase();
+      const characters = "123456789ABCDEFGHIJKLMNPRSTUVWXYZ"
+      let activateCode = "";
+      for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        activateCode += characters[randomIndex];
+      }
+      return activateCode;
     },
     required: false
   })

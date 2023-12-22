@@ -64,23 +64,40 @@ export class UserService {
       activateCode: deviceDTO.activateCode.toUpperCase(),
     });
     if(device) {
-      const userUpdate = await this.userModel.findOneAndUpdate(
-        { email: userDTO.email },
-        { device: device },
-        { new: true },
-      );
-      const updateDevice = await this.deviceModel.findOneAndUpdate(
-        { activateCode: deviceDTO.activateCode },
-        {
-          user: userUpdate,
-        },
-        { new: true },
-      );
+      if(device.user) {
+        return {
+          status: 400,
+          data: {
+            error: "The user already has a binding"
+          }
+        }
+      }
+      else {
+        const userUpdate = await this.userModel.findOneAndUpdate(
+          { email: userDTO.email },
+          { device: device },
+          { new: true },
+        );
+        const updateDevice = await this.deviceModel.findOneAndUpdate(
+          { activateCode: deviceDTO.activateCode.toUpperCase() },
+          {
+            user: userUpdate,
+          },
+          { new: true },
+        );
 
+        const dataUsers = await this.getUsers(userDTO)
+
+        return {
+          status: 200,
+          data: {
+            error: "",
+            ...dataUsers
+          }
+        }
+
+      }
     }
-
-    return await this.getUsers(userDTO)
-
   }
 
   /*
@@ -92,28 +109,33 @@ export class UserService {
       const checkBindingUserDevice = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}).populate('user');
 
       if(checkBindingUserDevice.user) {
-        const friendDevice = await this.deviceModel.findOneAndUpdate(
-          { activateCode: deviceDTO.activateCode.toUpperCase() },
-          { right_golem: user },
-          {new: true})
-          .populate('user');
-        const myDevice = await this.deviceModel.findOneAndUpdate(
-          {
-            deviceId: user.device.deviceId
-          },
-          {
-            left_golem: friendDevice.user
-          },
-          {
-            new: true
-          })
-
-        return {
-          status: 200,
-          data: {
-            error: "",
-            friend: friendDevice,
-            my: myDevice
+        if(!checkBindingUserDevice.right_golem) {
+          const friendDevice = await this.deviceModel.findOneAndUpdate(
+            { activateCode: deviceDTO.activateCode.toUpperCase() },
+            { right_golem: user },
+            {new: true})
+            .populate('user');
+          const myDevice = await this.deviceModel.findOneAndUpdate(
+            { deviceId: user.device.deviceId },
+            { left_golem: friendDevice.user },
+            { new: true })
+          return {
+            status: 200,
+            data: {
+              error: "",
+              friend: friendDevice,
+              my: myDevice
+            }
+          }
+        }
+        else {
+          return {
+            status: 400,
+            data: {
+              error: "A friend's account already has a linked golem",
+              friend: await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}),
+              my: await this.deviceModel.findOne({ deviceId: user.device.deviceId })
+            }
           }
         }
       } else {

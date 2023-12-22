@@ -88,7 +88,7 @@ export class DeviceService {
         if (deleteDevice.user) {
           await this.userModel.findOneAndUpdate({email: deleteDevice.user.email}, { $unset: { device: 1 }})
         }
-        
+
         const device = await this.deviceModel.findOneAndDelete({deviceId: deviceDTO.deviceId})
 
         return {
