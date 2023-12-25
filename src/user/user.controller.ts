@@ -7,6 +7,7 @@ import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 import { GolemType } from "../device/types/device.types";
 import { Response } from "express";
 import { User } from "./entities/user.schema";
+import { assignWith } from "lodash";
 
 
 
@@ -45,9 +46,10 @@ export class UserController {
       res.status(response.status).send(response.data);
   }
 
-  @Patch()
-  userPlatform(@Body() user: UpdateUserDto){
-    return this.userService.update(user);
+  @Patch(":email")
+  async userPlatform(@Body() data: UpdateUserDto, @Param('email') email: string, @Res() res: Response){
+    const response = await this.userService.update(data, email);
+    res.status(response.status).send(response.data);
   }
 
   @Post(':email/:name')

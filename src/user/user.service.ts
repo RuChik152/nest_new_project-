@@ -3,11 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.schema';
-import { Error, Model, QueryOptions } from "mongoose";
+import { Error, Model, QueryOptions, Schema, Types } from "mongoose";
 import { Device, DeviceDocument } from '../device/entities/device.schema';
 import { UpdateDeviceDto } from "../device/dto/update-device.dto";
 import { GolemType } from "../device/types/device.types";
 import { use } from "passport";
+
+
+
 
 @Injectable()
 export class UserService {
@@ -40,20 +43,45 @@ export class UserService {
   /*
    * Обновление данных пользователя
    */
-  async update(user: UpdateUserDto) {
-    try {
-      const filter: UpdateUserDto = { email: user.email };
-      const update: UpdateUserDto = user;
-      const options: QueryOptions = {
-        new: true,
-        upsert: true,
-        setDefaultsOnInsert: true,
-      };
+  async update(data: UpdateUserDto, email: string) {
 
-      return await this.userModel.findOneAndUpdate(filter, update, options);
-    } catch (error) {
-      return await error;
+    const regExp = new RegExp('^.*@.*\\..*','ig')
+    const checkEmail = regExp.test(email)
+    if (checkEmail){
+      try {
+        const filter: UpdateUserDto = { email: email };
+        const update: UpdateUserDto = data;
+        const options: QueryOptions = {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+        };
+        return {
+          status: 200,
+          data: {
+            error: "",
+            ... await this.userModel.findOneAndUpdate(filter, update, options).lean()
+          }
+        }
+      } catch (error) {
+        return {
+          status: 500,
+          data: {
+            error: error
+          }
+        }
+      }
+    } else {
+      return {
+        status: 400,
+        data: {
+          error: "Incorrect email address",
+        }
+
+      }
     }
+
+
   }
 
   /*
@@ -241,11 +269,18 @@ export class UserService {
     }
   }
 
+ /*
+  * Удаление привязки шлема к аккаунту.
+  */
   async deleteBinding(userDTO: UpdateUserDto) {
     try {
     const user = await this.userModel.findOne({email: userDTO.email}).populate({path: 'device', select: 'deviceId _id'})
+
+      await this.deviceModel.findOneAndUpdate({right_golem: user._id}, {$unset: {right_golem: 1}})
+      await this.deviceModel.findOneAndUpdate({left_golem: user._id}, {$unset: {left_golem: 1}})
+
       if(user.device && user.device.deviceId) {
-        await this.deviceModel.findOneAndUpdate({deviceId: user.device.deviceId}, {$unset: {user: 1}})
+        await this.deviceModel.findOneAndUpdate({deviceId: user.device.deviceId}, {$unset: {user: 1, left_golem: 1, right_golem: 1}})
         await this.userModel.findOneAndUpdate({email: userDTO.email}, {$unset: {device: 1}})
         return {
           status: 200,

@@ -18,7 +18,8 @@ export class User {
 
   @Prop({
     type: String,
-    default: "anonymous"
+    default: "anonymous",
+    maxlength: 16
   })
   nickname: string
 
