@@ -24,13 +24,13 @@ import { MailerUserSchema, MailUser } from "./mail.schema";
         defaults: {
           from: `info@belivr.tech`
         },
-        template: {
-          dir: resolve(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(),
-          options : {
-            strict: true
-          }
-        }
+        // template: {
+        //   dir: resolve(__dirname, 'templates'),
+        //   adapter: new HandlebarsAdapter(),
+        //   options : {
+        //     strict: true
+        //   }
+        // }
       })
 
     }),

@@ -47,8 +47,8 @@ export class DeviceService {
   }
 
   async update(device: CreateDeviceDto, data: UpdateDeviceDto) {
-    const update: UpdateDeviceDto = data;
     const filter: CreateDeviceDto = device;
+    const update: UpdateDeviceDto = data;
     const field =  "-_id -createdAt -updatedAt -__v";
 
     const currentDeviceData = await this.deviceModel.findOne(filter,
@@ -116,4 +116,6 @@ export class DeviceService {
       }
     }
   }
+
+
 }

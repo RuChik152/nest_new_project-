@@ -67,6 +67,149 @@ export class Device {
   victory: number
 
   @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_SPDR: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_SKLT: number
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_GHST: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_ANML: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_ANML_VPR: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_ANML_WLF: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_ANML_BEAR: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_ANML_DEER: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  kill_KARGA: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  DRG_DMG: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  LOSE_LVL: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  DSTR_STONES: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  FRND_DMG: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  FRND_KILL: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  MSHRM: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  GLD_CHST: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_duplex: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_rain: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_wind: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_earthquake: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_lightning: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_DRG_fire: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_DRG_healing: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  s_mind_capture: number
+
+  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })

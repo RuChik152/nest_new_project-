@@ -38,4 +38,125 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @IsOptional()
   @IsNumber()
   victory?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_SPDR?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_SKLT?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_GHST?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_ANML?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_ANML_VPR?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_ANML_WLF?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_ANML_BEAR?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_ANML_DEER?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  kill_KARGA?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  DRG_DMG?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  LOSE_LVL?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  DSTR_STONES?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  FRND_DMG?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  FRND_KILL?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  MSHRM?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  GLD_CHST?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_duplex?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_rain?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_wind?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_earthquake?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_lightning?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_DRG_fire?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_DRG_healing?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  s_mind_capture?: number
+
 }
