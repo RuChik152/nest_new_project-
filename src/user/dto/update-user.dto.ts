@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { CreateUserDto } from "./create-user.dto";
-import { IsObject, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsObject, IsOptional, IsString } from "class-validator";
 
 type User_id_Type = {
   user_id: string,
@@ -38,5 +38,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsString()
   nickname?: string
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  DEV?:number
 
 }

@@ -31,6 +31,12 @@ export class User {
   platform?: string
 
   @Prop({
+    type: Number,
+    default: 0,
+  })
+  DEV?: number
+
+  @Prop({
     default: false,
   })
   sendstatus?: boolean

@@ -195,7 +195,7 @@ export class UserService {
   async getUser(user: UpdateUserDto) {
     try {
       return await this.userModel
-        .findOne({ email: user.email }, '-createdAt -updatedAt -__v ')
+        .findOne({ email: user.email }, '-createdAt -updatedAt -__v')
         .populate({
           path: 'device',
           select: '-__v -createdAt -updatedAt -user',
