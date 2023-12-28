@@ -195,10 +195,10 @@ export class UserService {
   async getUser(user: UpdateUserDto) {
     try {
       return await this.userModel
-        .findOne({ email: user.email }, '-createdAt -updatedAt -__v -_id')
+        .findOne({ email: user.email }, '-createdAt -updatedAt -__v ')
         .populate({
           path: 'device',
-          select: '-_id -__v -createdAt -updatedAt -user',
+          select: '-__v -createdAt -updatedAt -user',
         })
         .lean();
     } catch (error) {
@@ -212,10 +212,10 @@ export class UserService {
   async getUsers(dataUser: UpdateUserDto) {
     const user = await this.getUser(dataUser);
     const usersList = await this.userModel
-      .find({}, '-createdAt -updatedAt -__v -_id')
+      .find({}, '-createdAt -updatedAt -__v -name -platform -sendstatus -auth_data -news -email')
       .populate({
         path: 'device',
-        select: '-_id -__v -createdAt -updatedAt -user',
+        select: ' -__v -createdAt -updatedAt -user',
       })
       .lean();
 
@@ -249,9 +249,9 @@ export class UserService {
     try {
       const myDevice = await this.deviceModel
         .findOne({deviceId: deviceDTO.deviceId})
-        .populate({ path: 'user', select: 'email name platform -_id' })
-        .populate({ path: 'left_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
-        .populate({ path: 'right_golem', select: '-_id -createdAt -updatedAt -__v', populate: { path: 'device', select: '-_id -createdAt -updatedAt -__v'}})
+        .populate({ path: 'user', select: 'email name platform' })
+        .populate({ path: 'left_golem', select: ' -createdAt -updatedAt -__v', populate: { path: 'device', select: ' -createdAt -updatedAt -__v'}})
+        .populate({ path: 'right_golem', select: ' -createdAt -updatedAt -__v', populate: { path: 'device', select: ' -createdAt -updatedAt -__v'}})
 
       switch (golem) {
         case "right_golem":
