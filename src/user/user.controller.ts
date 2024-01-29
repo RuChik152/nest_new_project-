@@ -30,6 +30,9 @@ export class UserController {
       return this.userService.getUser(user)
   }
 
+  /*
+   * Ручка для активации голема
+   */
   @ApiResponse({ status: 200, description: "Возвращаються обновленные данные по пользователю"})
   @ApiResponse({ status: 404, description: "Аккаунт друга не активирован"})
   @ApiResponse({ status: 500, description: "Ошибка сервера"})

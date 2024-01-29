@@ -1,6 +1,7 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { CreateUserDto } from "./create-user.dto";
 import { IsNumber, IsObject, IsOptional, IsString } from "class-validator";
+import { UpdateDeviceDto } from "../../device/dto/update-device.dto";
 
 type User_id_Type = {
   user_id: string,
@@ -43,5 +44,12 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsNumber()
   DEV?:number
+
+  @ApiProperty({
+    type: () => UpdateDeviceDto
+  })
+  @IsOptional()
+  @IsObject()
+  device?:UpdateDeviceDto
 
 }
