@@ -132,9 +132,14 @@ export class UserService {
    * Привязка своего шлема к шлему друга, тем самым для друга это будет правый голем, для пользователя левый голем
    */
   async bindingGolem(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
+    console.log("TEST_1")
     try {
+      console.log("TEST_2")
       const user = await this.userModel.findOne( { email: userDTO.email }).populate('device');
-      const checkBindingUserDevice = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}).populate('user');
+      const checkBindingUserDevice = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}).populate('user').populate({path: "left_golem", populate:{path: "device"}});
+      console.log("TEST_3")
+      const checkTestLoopBinding = await this.checkFriendGolem(user, checkBindingUserDevice)
+      await console.log("TEST checkTestLoopBinding: =>", checkTestLoopBinding)
 
       if(checkBindingUserDevice.user) {
         if(!checkBindingUserDevice.right_golem) {
@@ -181,12 +186,28 @@ export class UserService {
       return {
         status: 500,
         data: {
-          error: "SERVER ERROR",
+          error: `SERVER ERROR: ${error}`,
           friend: null,
           my: null
         }
       }
     }
+  }
+
+  async checkFriendGolem(user: UpdateUserDto | any, device: UpdateDeviceDto | any) {
+
+    console.log(device)
+    if(device.left_golem) {
+      if (device.left_golem.email !== user.email){
+        const newDevice = await this.deviceModel.findOne({deviceId: device.left_golem.device.deviceId}).populate('user').populate({path: "left_golem", populate:{path: "device"}});
+        await this.checkFriendGolem(user, newDevice)
+      } else  {
+        return false
+      }
+    } else {
+      return true
+    }
+
   }
 
   /*
@@ -226,8 +247,6 @@ export class UserService {
 
     const listUser = usersList
       .filter((el, index) => {
-        console.log(`ELEMENT ${index}:`, el)
-
         return el.hasOwnProperty('device') && el.device !== null && el.device.hasOwnProperty('score');
       })
       .sort((a, b) => {
