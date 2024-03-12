@@ -14,12 +14,16 @@ import { use } from "passport";
 
 @Injectable()
 export class UserService {
+
+  private checkStatus: boolean
+
   constructor(
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
     @InjectModel(Device.name)
     private deviceModel: Model<DeviceDocument>,
   ) {}
+
 
   /*
    * Проверка пользователя, если пользователя нет, то создаетьсяв БД,
@@ -132,55 +136,64 @@ export class UserService {
    * Привязка своего шлема к шлему друга, тем самым для друга это будет правый голем, для пользователя левый голем
    */
   async bindingGolem(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
-    console.log("TEST_1")
+
     try {
-      console.log("TEST_2")
       const user = await this.userModel.findOne( { email: userDTO.email }).populate('device');
       const checkBindingUserDevice = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}).populate('user').populate({path: "left_golem", populate:{path: "device"}});
-      console.log("TEST_3")
-      const checkTestLoopBinding = await this.checkFriendGolem(user, checkBindingUserDevice)
-      await console.log("TEST checkTestLoopBinding: =>", checkTestLoopBinding)
-
-      if(checkBindingUserDevice.user) {
-        if(!checkBindingUserDevice.right_golem) {
-          const friendDevice = await this.deviceModel.findOneAndUpdate(
-            { activateCode: deviceDTO.activateCode.toUpperCase() },
-            { right_golem: user },
-            {new: true})
-            .populate('user');
-          const myDevice = await this.deviceModel.findOneAndUpdate(
-            { deviceId: user.device.deviceId },
-            { left_golem: friendDevice.user },
-            { new: true })
-          return {
-            status: 200,
-            data: {
-              error: "",
-              friend: friendDevice,
-              my: myDevice
+      await this.checkFriendGolem(user, checkBindingUserDevice)
+      console.log("TEST this.checkStatus: =>", this.checkStatus)
+      if (!this.checkStatus){
+        if(checkBindingUserDevice.user) {
+          if(!checkBindingUserDevice.right_golem) {
+            const friendDevice = await this.deviceModel.findOneAndUpdate(
+              { activateCode: deviceDTO.activateCode.toUpperCase() },
+              { right_golem: user },
+              {new: true})
+              .populate('user');
+            const myDevice = await this.deviceModel.findOneAndUpdate(
+              { deviceId: user.device.deviceId },
+              { left_golem: friendDevice.user },
+              { new: true })
+            return {
+              status: 200,
+              data: {
+                error: "",
+                friend: friendDevice,
+                my: myDevice
+              }
             }
           }
-        }
-        else {
+          else {
+            return {
+              status: 400,
+              data: {
+                error: "A friend's account already has a linked golem",
+                friend: await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}),
+                my: await this.deviceModel.findOne({ deviceId: user.device.deviceId })
+              }
+            }
+          }
+        } else {
           return {
-            status: 400,
+            status: 404,
             data: {
-              error: "A friend's account already has a linked golem",
+              error: "The friend's account has not been activated. He needs to activate a friend's account before tying a golem to it.",
               friend: await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase()}),
-              my: await this.deviceModel.findOne({ deviceId: user.device.deviceId })
+              my: await this.deviceModel.findOne({ deviceId: user.device.deviceId }),
             }
           }
         }
       } else {
         return {
-          status: 404,
+          status: 403,
           data: {
-            error: "The friend's account has not been activated. He needs to activate a friend's account before tying a golem to it.",
+            error: "It is impossible that when activating the golem, there are user matches in the connection chain.",
             friend: checkBindingUserDevice,
-            my: user,
+            my: user
           }
         }
       }
+
 
     } catch (error) {
       return {
@@ -195,19 +208,19 @@ export class UserService {
   }
 
   async checkFriendGolem(user: UpdateUserDto | any, device: UpdateDeviceDto | any) {
-
-    console.log(device)
+    console.log("checkFriendGolem: ",device)
     if(device.left_golem) {
       if (device.left_golem.email !== user.email){
         const newDevice = await this.deviceModel.findOne({deviceId: device.left_golem.device.deviceId}).populate('user').populate({path: "left_golem", populate:{path: "device"}});
         await this.checkFriendGolem(user, newDevice)
       } else  {
+        this.checkStatus = true
         return false
       }
     } else {
+      this.checkStatus = false
       return true
     }
-
   }
 
   /*
