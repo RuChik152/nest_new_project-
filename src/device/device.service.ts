@@ -23,7 +23,7 @@ export class DeviceService {
         const newDevice = await this.deviceModel.create(device);
         return await this.deviceModel.findOne(
           { deviceId: newDevice.deviceId },
-          'deviceId activateCode -_id',
+          'deviceId activateCode emojiCode -_id',
         );
       } else {
         if (findDevice.activateCode.length === 0) {
