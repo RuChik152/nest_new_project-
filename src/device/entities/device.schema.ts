@@ -1,16 +1,24 @@
 import { HydratedDocument } from 'mongoose';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
 import { randomBytes } from 'crypto';
 import { User } from "../../user/entities/user.schema";
 import * as mongoose from "mongoose";
 import { Achievement } from "../../achievement/entities/achievement.schema";
+import { generateEmoji } from "../lib/library";
 
 export type DeviceDocument = HydratedDocument<Device>
+
+let code: string
 
 @Schema({
   timestamps: true,
 })
 export class Device {
+
+
+  constructor() {
+  }
+
   @Prop()
   deviceId: string;
 
@@ -24,11 +32,21 @@ export class Device {
         const randomIndex = Math.floor(Math.random() * characters.length);
         activateCode += characters[randomIndex];
       }
+      code = activateCode;
       return activateCode;
     },
     required: false
   })
   activateCode: string;
+
+  @Prop({
+    type: String,
+    default: "",
+    required: false
+  })
+  emojiCode: string;
+
+
 
   @Prop({
     type: Number,
@@ -233,3 +251,10 @@ export class Device {
 }
 
 export const DeviceSchema = SchemaFactory.createForClass(Device);
+
+DeviceSchema.pre("save", async function(next) {
+  const code = this.activateCode;
+  const response = await generateEmoji(code)
+  this.emojiCode = response.emoji
+  next()
+})

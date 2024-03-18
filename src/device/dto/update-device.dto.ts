@@ -10,6 +10,11 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @IsString()
   activateCode?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  emojiCode?: string;
+
   @ApiProperty({
     type: () => UpdateUserDto
   })
