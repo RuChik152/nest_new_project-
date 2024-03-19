@@ -43,11 +43,12 @@ export class UserController {
   }
 
 
-  @Patch('binding/:email/:activateCode')
-  async binding(@Param() user: UpdateUserDto, @Param() device: UpdateDeviceDto, @Res() res: Response){
+  @Patch('binding/:email')
+  async binding(@Param() user: UpdateUserDto, @Body() device: UpdateDeviceDto, @Res() res: Response){
       const response = await this.userService.bindingDevice(user, device);
       res.status(response.status).send(response.data);
   }
+
 
   @Patch(":email")
   async userPlatform(@Body() data: UpdateUserDto, @Param('email') email: string, @Res() res: Response){
