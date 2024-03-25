@@ -30,6 +30,7 @@ export class UserService {
    * если есть то отдаеться найденный
    */
   async checkUser(user: CreateUserDto) {
+    user.email = user.email.toLowerCase()
     try {
       const check = await this.userModel
         .findOne({ email: user.email })
@@ -92,9 +93,26 @@ export class UserService {
    * Привязка устройства к аккаунту пользователя
    */
   async bindingDevice(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
-    const device = await this.deviceModel.findOne({
-      activateCode: deviceDTO.activateCode.toUpperCase(),
-    });
+
+    userDTO.email = userDTO.email.toLowerCase()
+    let device: any;
+
+    if(deviceDTO.activateCode) {
+      device = await this.deviceModel.findOne({
+        activateCode: deviceDTO.activateCode.toUpperCase(),
+      });
+    } else if (deviceDTO.emojiCode) {
+      device = await this.deviceModel.findOne({
+        emojiCode: deviceDTO.emojiCode,
+      });
+    } else  {
+      return {
+        status: 404,
+        data: {
+          error: "Device Not Found"
+        }
+      }
+    }
     if(device) {
       if(device.user) {
         return {
@@ -110,13 +128,38 @@ export class UserService {
           { device: device },
           { new: true },
         );
-        const updateDevice = await this.deviceModel.findOneAndUpdate(
-          { activateCode: deviceDTO.activateCode.toUpperCase() },
-          {
-            user: userUpdate,
-          },
-          { new: true },
-        );
+
+        if(deviceDTO.activateCode) {
+          await this.deviceModel.findOneAndUpdate(
+            { activateCode: deviceDTO.activateCode.toUpperCase() },
+            {
+              user: userUpdate,
+            },
+            { new: true },
+          );
+        } else if (deviceDTO.emojiCode) {
+          await this.deviceModel.findOneAndUpdate(
+            { emojiCode: deviceDTO.emojiCode },
+            {
+              user: userUpdate,
+            },
+            { new: true },
+          );
+        } else  {
+          return {
+            status: 404,
+            data: {
+              error: "Device Not Found"
+            }
+          }
+        }
+        // const updateDevice = await this.deviceModel.findOneAndUpdate(
+        //   { activateCode: deviceDTO.activateCode.toUpperCase() },
+        //   {
+        //     user: userUpdate,
+        //   },
+        //   { new: true },
+        // );
 
         const dataUsers = await this.getUsers(userDTO)
 
