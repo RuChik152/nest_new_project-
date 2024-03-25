@@ -30,6 +30,7 @@ export class UserService {
    * если есть то отдаеться найденный
    */
   async checkUser(user: CreateUserDto) {
+    user.email = user.email.toLowerCase()
     try {
       const check = await this.userModel
         .findOne({ email: user.email })
@@ -93,6 +94,7 @@ export class UserService {
    */
   async bindingDevice(userDTO: UpdateUserDto, deviceDTO: UpdateDeviceDto) {
 
+    userDTO.email = userDTO.email.toLowerCase()
     let device: any;
 
     if(deviceDTO.activateCode) {
