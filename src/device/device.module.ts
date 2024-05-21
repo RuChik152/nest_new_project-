@@ -1,6 +1,6 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
-import { DeviceService } from "./device.service";
-import { DeviceController } from "./device.controller";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { DeviceService } from './device.service';
+import { DeviceController } from './device.controller';
 import { MongooseModule } from "@nestjs/mongoose";
 import { Device, DeviceSchema } from "./entities/device.schema";
 import { User, UserSchema } from "../user/entities/user.schema";
@@ -21,6 +21,6 @@ export class DeviceModule implements NestModule{
    configure(consumer: MiddlewareConsumer): any {
      consumer
        .apply(DeviceMiddleware)
-       .forRoutes({path: 'device/:deviceId/test', method: RequestMethod.ALL})
+       .forRoutes(DeviceController)
    }
 }
