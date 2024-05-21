@@ -14,7 +14,13 @@ export class DeviceController {
 
   @Get(':deviceId')
   check(@Param() device: CreateDeviceDto) {
+      console.log("СРУ")
       return this.deviceService.check(device)
+  }
+
+  @Patch(':deviceId/test')
+  updateTest(@Param() device: CreateDeviceDto, @Body() data: UpdateDeviceDto){
+    return this.deviceService.update(device, data);
   }
 
   @Patch(':deviceId')
