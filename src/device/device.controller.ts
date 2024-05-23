@@ -14,7 +14,6 @@ export class DeviceController {
 
   @Get(':deviceId')
   check(@Param() device: CreateDeviceDto) {
-      console.log("СРУ")
       return this.deviceService.check(device)
   }
 

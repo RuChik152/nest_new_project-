@@ -11,6 +11,12 @@ import { use } from "passport";
 
 
 
+enum DO_SRVL {
+  YES = 1,
+  NO = 0,
+  NIL = 2,
+}
+
 
 @Injectable()
 export class UserService {
@@ -113,6 +119,7 @@ export class UserService {
         }
       }
     }
+
     if(device) {
       if(device.user) {
         return {
@@ -123,6 +130,8 @@ export class UserService {
         }
       }
       else {
+
+
         const userUpdate = await this.userModel.findOneAndUpdate(
           { email: userDTO.email },
           { device: device },
@@ -130,17 +139,46 @@ export class UserService {
         );
 
         if(deviceDTO.activateCode) {
+
+
+          let do_srvl: number
+
+          const device = await this.deviceModel.findOne({ activateCode: deviceDTO.activateCode.toUpperCase() })
+          if (device.SRVL === 0){
+            do_srvl = DO_SRVL.YES
+          } else if (device.SRVL > 0) {
+            do_srvl = DO_SRVL.NO
+          } else {
+            do_srvl = DO_SRVL.NIL
+          }
+
+
           await this.deviceModel.findOneAndUpdate(
             { activateCode: deviceDTO.activateCode.toUpperCase() },
             {
+              DO_SRVL: do_srvl,
               user: userUpdate,
             },
             { new: true },
           );
         } else if (deviceDTO.emojiCode) {
+
+          
+          let do_srvl: number
+
+          const device = await this.deviceModel.findOne({ emojiCode: deviceDTO.emojiCode })
+          if (device.SRVL === 0){
+            do_srvl = DO_SRVL.YES
+          } else if (device.SRVL > 0) {
+            do_srvl = DO_SRVL.NO
+          } else {
+            do_srvl = DO_SRVL.NIL
+          }
+
           await this.deviceModel.findOneAndUpdate(
             { emojiCode: deviceDTO.emojiCode },
             {
+              DO_SRVL: do_srvl,
               user: userUpdate,
             },
             { new: true },

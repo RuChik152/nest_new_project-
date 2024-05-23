@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { CreateDeviceDto } from "./create-device.dto";
-import { IsNumber, IsObject, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsObject, IsOptional, IsString } from "class-validator";
 import { UpdateUserDto } from "../../user/dto/update-user.dto";
 
 export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
@@ -142,6 +142,27 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  DO_SRVL?: number
+
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  SRVL?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  SRVL_MAX?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  CSTL?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
   s_duplex?: number
 
   @ApiProperty()
@@ -178,5 +199,10 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @IsOptional()
   @IsNumber()
   s_mind_capture?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  DEV?:number
 
 }

@@ -10,9 +10,7 @@ export type DeviceDocument = HydratedDocument<Device>
 
 let code: string
 
-@Schema({
-  timestamps: true,
-})
+@Schema()
 export class Device {
 
 
@@ -179,6 +177,31 @@ export class Device {
   })
   GLD_CHST: number
 
+
+  @Prop({
+    type: Number,
+    default: 2,
+  })
+  DO_SRVL: number
+
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  SRVL: number
+
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  SRVL_MAX: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  CSTL: number
+
   @Prop({
     type: Number,
     default: 0,
@@ -248,13 +271,46 @@ export class Device {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }]})
   achievements: Achievement[]
 
+  @Prop({
+    type: Date,
+    default: Date.now,
+  })
+  createdAt: Date;
+
+  @Prop({
+    type: Date,
+    default: null,
+  })
+  updatedAt: Date;
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  DEV?: number
+
 }
 
 export const DeviceSchema = SchemaFactory.createForClass(Device);
 
 DeviceSchema.pre("save", async function(next) {
-  const code = this.activateCode;
-  const response = await generateEmoji(code)
-  this.emojiCode = response.emoji
+  if (this.isNew) {
+    const code = this.activateCode;
+    const response = await generateEmoji(code)
+    this.emojiCode = response.emoji
+    this.createdAt = new Date()
+    this.updatedAt = null
+  }
+  this.updatedAt = undefined;
   next()
 })
+
+DeviceSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+})
+
+DeviceSchema.pre('updateOne', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
