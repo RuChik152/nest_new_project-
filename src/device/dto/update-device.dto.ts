@@ -62,6 +62,11 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  tutorial?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
   kill_SPDR?: number
 
   @ApiProperty()

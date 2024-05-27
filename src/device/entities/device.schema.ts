@@ -86,6 +86,12 @@ export class Device {
     type: Number,
     default: 0,
   })
+  tutorial: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
   kill_SPDR: number
 
   @Prop({
