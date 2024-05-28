@@ -1,6 +1,9 @@
 # compiled output
+.env
+
 /dist
 /node_modules
+logs
 
 # Logs
 logs
@@ -34,3 +37,6 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 .env
+
+/mock_data
+/mock_data/gameSettings.json

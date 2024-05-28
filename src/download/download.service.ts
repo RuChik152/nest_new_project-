@@ -13,6 +13,7 @@ export class DownloadService {
   }
 
   fileBuffer() {
+
     return readFileSync(join(process.cwd(), 'Karga press kit.docx'));
   }
 
