@@ -89,6 +89,12 @@ export class Device {
   tutorial: number
 
   @Prop({
+    type: String,
+    default: ""
+  })
+  platform: string
+
+  @Prop({
     type: Number,
     default: 0,
   })
@@ -294,6 +300,78 @@ export class Device {
     default: 0,
   })
   DEV?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  LEFT_GOLEM_ABLC_SKLS_SPEED_UP?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  LEFT_GOLEM_ABLC_SKLS_UP_DMG?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  LEFT_GOLEM_ABLC_SKLS_RCCHT?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  LEFT_GOLEM_ABLC_SKLS_MGT?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  RIGHT_GOLEM_ABLC_SKLS_SPEED_UP?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  RIGHT_GOLEM_ABLC_SKLS_UP_DMG?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  RIGHT_GOLEM_ABLC_SKLS_RCCHT?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  RIGHT_GOLEM_ABLC_SKLS_MGT?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  ABLC_SKLS_FIRE?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  ABLC_SKLS_FIRE_TIME?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  ABLC_SKLS_HP?: number
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  ABLC_SKLS_SHLD?: number
 
 }
 

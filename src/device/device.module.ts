@@ -22,6 +22,6 @@ export class DeviceModule implements NestModule{
    configure(consumer: MiddlewareConsumer): any {
      consumer
        .apply(DeviceMiddleware)
-       .forRoutes(DeviceController)
+       .forRoutes({path: 'device/:deviceId/test', method: RequestMethod.ALL})
    }
 }

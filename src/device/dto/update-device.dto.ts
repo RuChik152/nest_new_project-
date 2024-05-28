@@ -66,6 +66,11 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  platform?:string
+
+  @ApiProperty()
+  @IsOptional()
   @IsNumber()
   kill_SPDR?: number
 
@@ -210,4 +215,68 @@ export class UpdateDeviceDto extends PartialType(CreateDeviceDto) {
   @IsNumber()
   DEV?:number
 
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  LEFT_GOLEM_ABLC_SKLS_SPEED_UP?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  LEFT_GOLEM_ABLC_SKLS_UP_DMG?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  LEFT_GOLEM_ABLC_SKLS_RCCHT?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  LEFT_GOLEM_ABLC_SKLS_MGT?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  RIGHT_GOLEM_ABLC_SKLS_SPEED_UP?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  RIGHT_GOLEM_ABLC_SKLS_UP_DMG?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  RIGHT_GOLEM_ABLC_SKLS_RCCHT?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  RIGHT_GOLEM_ABLC_SKLS_MGT?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  ABLC_SKLS_FIRE?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  ABLC_SKLS_FIRE_TIME?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  ABLC_SKLS_HP?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  ABLC_SKLS_SHLD?: number
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  ABLC_GLM_HP_UP?: number
 }
