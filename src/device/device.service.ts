@@ -46,12 +46,16 @@ export class DeviceService {
     }
   }
 
-  async update(device: CreateDeviceDto, data: UpdateDeviceDto) {
+  async update(device: CreateDeviceDto, data: UpdateDeviceDto, device_platform: string) {
     const filter: CreateDeviceDto = device;
     const update: UpdateDeviceDto = data;
     const field =  "-_id -createdAt -updatedAt -__v";
 
-    await this.deviceModel.findOneAndUpdate(filter, { $inc: update });
+    await this.deviceModel.findOneAndUpdate(filter, 
+      { 
+        $inc: update, 
+        $set: { platform: device_platform } 
+      });
     return this.deviceModel.findOne(filter, field)
 
   }

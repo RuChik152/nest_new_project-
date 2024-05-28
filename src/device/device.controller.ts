@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Put, Res, Headers } from "@nestjs/common";
 import { DeviceService } from './device.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import {  ApiTags } from "@nestjs/swagger";
@@ -18,13 +18,13 @@ export class DeviceController {
   }
 
   @Patch(':deviceId/test')
-  updateTest(@Param() device: CreateDeviceDto, @Body() data: UpdateDeviceDto){
-    return this.deviceService.update(device, data);
+  updateTest(@Param() device: CreateDeviceDto, @Body() data: UpdateDeviceDto, @Headers('XXX-User-Platform') platform: string){
+    return this.deviceService.update(device, data, platform);
   }
 
   @Patch(':deviceId')
-  update(@Param() device: CreateDeviceDto, @Body() data: UpdateDeviceDto){
-    return this.deviceService.update(device, data);
+  update(@Param() device: CreateDeviceDto, @Body() data: UpdateDeviceDto, @Headers('XXX-User-Platform') platform: string){
+    return this.deviceService.update(device, data, platform);
   }
 
   @Delete(':deviceId')
