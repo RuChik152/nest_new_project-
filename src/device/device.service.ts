@@ -48,13 +48,44 @@ export class DeviceService {
 
   async update(device: CreateDeviceDto, data: UpdateDeviceDto, device_platform: string) {
     const filter: CreateDeviceDto = device;
-    const {victory, ...update}: UpdateDeviceDto = data;
+    const {
+      victory, 
+      LEFT_GOLEM_ABLC_SKLS_SPEED_UP, 
+      LEFT_GOLEM_ABLC_SKLS_UP_DMG,
+      LEFT_GOLEM_ABLC_SKLS_RCCHT,
+      LEFT_GOLEM_ABLC_SKLS_MGT,
+      RIGHT_GOLEM_ABLC_SKLS_SPEED_UP,
+      RIGHT_GOLEM_ABLC_SKLS_UP_DMG,
+      RIGHT_GOLEM_ABLC_SKLS_RCCHT,
+      RIGHT_GOLEM_ABLC_SKLS_MGT,
+      ABLC_SKLS_FIRE,
+      ABLC_SKLS_FIRE_TIME,
+      ABLC_SKLS_HP,
+      ABLC_SKLS_SHLD,
+      ...update
+    }: UpdateDeviceDto = data;
     const field =  "-_id -createdAt -updatedAt -__v";
+
+    const replacement: UpdateDeviceDto = {
+      victory, 
+      LEFT_GOLEM_ABLC_SKLS_SPEED_UP, 
+      LEFT_GOLEM_ABLC_SKLS_UP_DMG,
+      LEFT_GOLEM_ABLC_SKLS_RCCHT,
+      LEFT_GOLEM_ABLC_SKLS_MGT,
+      RIGHT_GOLEM_ABLC_SKLS_SPEED_UP,
+      RIGHT_GOLEM_ABLC_SKLS_UP_DMG,
+      RIGHT_GOLEM_ABLC_SKLS_RCCHT,
+      RIGHT_GOLEM_ABLC_SKLS_MGT,
+      ABLC_SKLS_FIRE,
+      ABLC_SKLS_FIRE_TIME,
+      ABLC_SKLS_HP,
+      ABLC_SKLS_SHLD,
+    } 
 
     await this.deviceModel.findOneAndUpdate(filter, 
       { 
         $inc: update, 
-        $set: { platform: device_platform, victory: victory } 
+        $set: replacement
       });
     return this.deviceModel.findOne(filter, field)
 

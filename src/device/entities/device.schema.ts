@@ -78,7 +78,7 @@ export class Device {
 
   @Prop({
     type: Number,
-    default: 0,
+    default: -7,
   })
   victory: number
 
