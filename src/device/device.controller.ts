@@ -13,8 +13,8 @@ export class DeviceController {
 
 
   @Get(':deviceId')
-  check(@Param() device: CreateDeviceDto) {
-      return this.deviceService.check(device)
+  check(@Param() device: CreateDeviceDto, @Headers('XXX-User-Platform') platform: string) {
+      return this.deviceService.check(device, platform)
   }
 
   @Patch(':deviceId/test')

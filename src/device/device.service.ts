@@ -13,24 +13,32 @@ export class DeviceService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async check(device: CreateDeviceDto) {
+  async check(device: CreateDeviceDto, device_platform: string) {
     try {
       const filter: UpdateDeviceDto = { deviceId: device.deviceId };
 
       const findDevice = await this.deviceModel.findOne(filter);
 
+      filter.platform = device_platform;
+
       if (findDevice === null) {
-        const newDevice = await this.deviceModel.create(device);
+        const newDevice = await this.deviceModel.create(filter);
         return await this.deviceModel.findOne(
           { deviceId: newDevice.deviceId },
           'deviceId activateCode emojiCode -_id',
         );
       } else {
         if (findDevice.activateCode.length === 0) {
+          await this.deviceModel.findOneAndUpdate({ deviceId: device.deviceId }, {
+            $set: {platform: device_platform}
+          })
           return await this.deviceModel
             .findOne({ deviceId: device.deviceId }, 'deviceId -_id')
             .populate({ path: 'user', select: 'email name platform -_id' });
         } else {
+          await this.deviceModel.findOneAndUpdate({ deviceId: device.deviceId }, {
+            $set: {platform: device_platform}
+          })
           return await this.deviceModel
             .findOne(
               { deviceId: device.deviceId },
@@ -49,7 +57,7 @@ export class DeviceService {
   async update(device: CreateDeviceDto, data: UpdateDeviceDto, device_platform: string) {
     const filter: CreateDeviceDto = device;
     const {
-      victory, 
+      platform, 
       LEFT_GOLEM_ABLC_SKLS_SPEED_UP, 
       LEFT_GOLEM_ABLC_SKLS_UP_DMG,
       LEFT_GOLEM_ABLC_SKLS_RCCHT,
@@ -62,12 +70,12 @@ export class DeviceService {
       ABLC_SKLS_FIRE_TIME,
       ABLC_SKLS_HP,
       ABLC_SKLS_SHLD,
+      ABLC_GLM_HP_UP,
       ...update
-    }: UpdateDeviceDto = data;
+    } : UpdateDeviceDto = data;
     const field =  "-_id -createdAt -updatedAt -__v";
 
-    const replacement: UpdateDeviceDto = {
-      victory, 
+    const replace: UpdateDeviceDto = {
       LEFT_GOLEM_ABLC_SKLS_SPEED_UP, 
       LEFT_GOLEM_ABLC_SKLS_UP_DMG,
       LEFT_GOLEM_ABLC_SKLS_RCCHT,
@@ -80,13 +88,14 @@ export class DeviceService {
       ABLC_SKLS_FIRE_TIME,
       ABLC_SKLS_HP,
       ABLC_SKLS_SHLD,
-    } 
+      ABLC_GLM_HP_UP,
+      platform: device_platform
+    }
 
-    await this.deviceModel.findOneAndUpdate(filter, 
-      { 
-        $inc: update, 
-        $set: replacement
-      });
+    await this.deviceModel.findOneAndUpdate(filter, { 
+      $inc: update, 
+      $set: replace 
+    });
     return this.deviceModel.findOne(filter, field)
 
   }
