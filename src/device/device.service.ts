@@ -71,6 +71,7 @@ export class DeviceService {
       ABLC_SKLS_HP,
       ABLC_SKLS_SHLD,
       ABLC_GLM_HP_UP,
+      victory,
       ...update
     } : UpdateDeviceDto = data;
     const field =  "-_id -createdAt -updatedAt -__v";
@@ -89,7 +90,8 @@ export class DeviceService {
       ABLC_SKLS_HP,
       ABLC_SKLS_SHLD,
       ABLC_GLM_HP_UP,
-      platform: device_platform
+      platform: device_platform,
+      victory,
     }
 
     await this.deviceModel.findOneAndUpdate(filter, { 
